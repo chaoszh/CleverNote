@@ -1,0 +1,10 @@
+E:\ChaosZh\文件\项目\【大二下】用户交互技术期末大项目\windows application\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe.config
+E:\ChaosZh\文件\项目\【大二下】用户交互技术期末大项目\windows application\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe
+E:\ChaosZh\文件\项目\【大二下】用户交互技术期末大项目\windows application\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.pdb
+E:\ChaosZh\文件\项目\【大二下】用户交互技术期末大项目\windows application\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csprojAssemblyReference.cache
+E:\ChaosZh\文件\项目\【大二下】用户交互技术期末大项目\windows application\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Form1.resources
+E:\ChaosZh\文件\项目\【大二下】用户交互技术期末大项目\windows application\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
+E:\ChaosZh\文件\项目\【大二下】用户交互技术期末大项目\windows application\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.GenerateResource.cache
+E:\ChaosZh\文件\项目\【大二下】用户交互技术期末大项目\windows application\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.CoreCompileInputs.cache
+E:\ChaosZh\文件\项目\【大二下】用户交互技术期末大项目\windows application\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.exe
+E:\ChaosZh\文件\项目\【大二下】用户交互技术期末大项目\windows application\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.pdb
