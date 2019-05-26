@@ -1,0 +1,10 @@
+E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\bin\Debug\HCIFinal.exe.config
+E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\bin\Debug\HCIFinal.exe
+E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\bin\Debug\HCIFinal.pdb
+E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csprojAssemblyReference.cache
+E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Form1.resources
+E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Properties.Resources.resources
+E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csproj.GenerateResource.cache
+E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csproj.CoreCompileInputs.cache
+E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\obj\Debug\HCIFinal.exe
+E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\obj\Debug\HCIFinal.pdb
