@@ -8,3 +8,13 @@ E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project
 E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csproj.CoreCompileInputs.cache
 E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\obj\Debug\HCIFinal.exe
 E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\obj\Debug\HCIFinal.pdb
+C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\bin\Debug\HCIFinal.exe.config
+C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\bin\Debug\HCIFinal.exe
+C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\bin\Debug\HCIFinal.pdb
+C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csprojResolveAssemblyReference.cache
+C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Properties.Resources.resources
+C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csproj.GenerateResource.cache
+C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csproj.CoreCompileInputs.cache
+C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.exe
+C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.pdb
+C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Form1.resources
