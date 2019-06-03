@@ -110,6 +110,8 @@ namespace HCIFinal
         
         private void AddButton_Click(object sender, EventArgs e)
         {
+            this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;
+            //System.Threading.Thread.Sleep(500);
             Label pos = new Label();
             pos.Location = new System.Drawing.Point(8, 18 + (text_cont) * 100);
             pos.Size = new System.Drawing.Size(400, 85);
@@ -155,16 +157,17 @@ namespace HCIFinal
             t.Multiline = true;
             t.Tag = _id;
 
-            l.Visible = false;
+            
             is_writing = true;
             this.panel2.Controls.Add(pos);
-            this.panel2.Controls.Remove(pos);
+            
             this.panel2.Controls.Add(l);
             l.Controls.Add(del);
             l.Controls.Add(move);
 
             this.panel2.Controls.Add(t);
-
+            this.panel2.Controls.Remove(pos);
+            l.Visible = false;
             item i = new item();
             i._l = l;
             i._del = del;
@@ -172,7 +175,8 @@ namespace HCIFinal
             i._t = t;
             i.id = _id++;
             items.Add(i);
-            
+            //System.Threading.Thread.Sleep(500);
+            //this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Maximum;
             //this.Controls.Add(tex);
         }
 
@@ -185,7 +189,7 @@ namespace HCIFinal
             {
                 if (id == i.id)
                 {
-                    top = i._l.Top;
+                    top = i._l.Top; 
                     break;
                 }
             }
@@ -252,8 +256,16 @@ namespace HCIFinal
                 if (id == i.id)
                 {
                     if (i._l.Visible)
+                    {
                         i._l.Visible = false;
-                    else i._l.Visible = true;
+                        i._t.Visible = true;
+                    }
+
+                    else
+                    {
+                        i._l.Visible = true;
+                        i._t.Visible = false;
+                    }
                     break;
                 }
 
@@ -269,8 +281,16 @@ namespace HCIFinal
                 if (id == i.id)
                 {
                     if (i._l.Visible)
+                    {
                         i._l.Visible = false;
-                    else i._l.Visible = true;
+                        i._t.Visible = true;
+                    }
+
+                    else
+                    {
+                        i._l.Visible = true;
+                        i._t.Visible = false;
+                    }
                     break;
                 }
 
