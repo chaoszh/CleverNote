@@ -18,3 +18,4 @@ C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.
 C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.exe
 C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.pdb
 C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Form1.resources
+C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Form2.resources

@@ -1,6 +1,6 @@
 ﻿namespace HCIFinal
 {
-    partial class Form1
+    partial class Form2
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -31,7 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.ExitButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
             this.PinButton = new System.Windows.Forms.Button();
             this.AddButton = new System.Windows.Forms.Button();
             this.folderName = new System.Windows.Forms.Label();
@@ -59,10 +58,9 @@
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.Color.Black;
-            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.PinButton);
             this.panel1.Controls.Add(this.AddButton);
             this.panel1.Controls.Add(this.folderName);
@@ -72,23 +70,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(433, 40);
             this.panel1.TabIndex = 1;
-            // 
-            // button1
-            // 
-            this.button1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button1.BackgroundImage")));
-            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button1.FlatAppearance.BorderSize = 0;
-            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Location = new System.Drawing.Point(11, 13);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(14, 14);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "\r\n";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // PinButton
             // 
@@ -134,7 +115,7 @@
             this.folderName.Name = "folderName";
             this.folderName.Size = new System.Drawing.Size(55, 13);
             this.folderName.TabIndex = 2;
-            this.folderName.Text = this._title;
+            this.folderName.Text = "主页";
             this.folderName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // panel2
@@ -171,7 +152,6 @@
         private System.Windows.Forms.Label folderName;
         private System.Windows.Forms.Button AddButton;
         private System.Windows.Forms.Button PinButton;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Panel panel2;
     }
 }

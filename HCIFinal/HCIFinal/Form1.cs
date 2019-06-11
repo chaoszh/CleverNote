@@ -13,11 +13,13 @@ namespace HCIFinal
 {
     public partial class Form1 : Form
     {
+        private Form2 _form1;
         private Point mouse_offset;
         private bool is_writing = false;
         private int text_cont = 0;
         private int _id = 0;
-        private struct item
+        private string _title;
+        public struct item
         {
             public int id;
             public Label _l;
@@ -25,12 +27,49 @@ namespace HCIFinal
             public Button _del;
             public TextBox _t;
         };
-        private ArrayList items = new ArrayList();
+        public struct items
+        {
+            public int id;
+            public ArrayList _item;
+        }
+        public items _items;
+
+        
+
         //GlobalMouseHandler 
         public Form1()
         {
             InitializeComponent();
         }
+        public Form1(Form2 form, string title, int id) : this()
+        {
+            _form1 = form;
+            _title = title;
+            this.folderName.Text = this._title;
+            bool find = false;
+            foreach (items i in form.itemList)
+            {
+                if (id == i.id)
+                {
+                    _items = i;
+                    find = true;
+                    break;
+                }
+            }
+            if (!find)
+            {
+                _items.id = id;
+                _items._item = new ArrayList();
+                form.itemList.Add(_items);
+            }
+            foreach (item i in _items._item)
+            {
+                this.panel2.Controls.Add(i._l);
+
+                this.panel2.Controls.Add(i._t);
+            }
+        }
+
 
         #region 窗口拖动、大小
         /// <summary>
@@ -89,6 +128,7 @@ namespace HCIFinal
         #region navigator bar
         private void ExitButton_Click(object sender, EventArgs e)
         {
+            _form1.Close();
             this.Close();
         }
 
@@ -107,7 +147,7 @@ namespace HCIFinal
         }
         #endregion
 
-        
+
         private void AddButton_Click(object sender, EventArgs e)
         {
             this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;
@@ -117,7 +157,7 @@ namespace HCIFinal
             pos.Size = new System.Drawing.Size(400, 85);
             Label l = new Label();
             l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            l.Location = new System.Drawing.Point(8, 18 + (text_cont)*100);
+            l.Location = new System.Drawing.Point(8, 18 + (text_cont) * 100);
             l.Name = "新消息";
             l.Size = new System.Drawing.Size(400, 85);
             l.TabIndex = 6;
@@ -144,6 +184,8 @@ namespace HCIFinal
             move.TabIndex = 1;
             move.Text = "M";
             move.UseVisualStyleBackColor = true;
+            move.Click += new System.EventHandler(this.move_Click);
+            move.Tag = _id;
 
             TextBox t = new TextBox();
             t.Location = new System.Drawing.Point(8, 18 + (text_cont++) * 100);
@@ -157,16 +199,14 @@ namespace HCIFinal
             t.Multiline = true;
             t.Tag = _id;
 
-            
+
             is_writing = true;
-            this.panel2.Controls.Add(pos);
-            
+
             this.panel2.Controls.Add(l);
             l.Controls.Add(del);
             l.Controls.Add(move);
 
             this.panel2.Controls.Add(t);
-            this.panel2.Controls.Remove(pos);
             l.Visible = false;
             item i = new item();
             i._l = l;
@@ -174,37 +214,100 @@ namespace HCIFinal
             i._move = move;
             i._t = t;
             i.id = _id++;
-            items.Add(i);
+            _items._item.Add(i);
             //System.Threading.Thread.Sleep(500);
             //this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Maximum;
             //this.Controls.Add(tex);
         }
-
-        private void DEL_Click(object sender, EventArgs e)
+        public void MOVE_ADD(string text)
         {
+            this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;
+
+            Console.Write("666");
+
+            Label l = new Label();
+            l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            l.Location = new System.Drawing.Point(8, 18 + (text_cont) * 100);
+            l.Name = "新消息";
+            l.Size = new System.Drawing.Size(400, 85);
+            l.TabIndex = 6;
+            l.Text = text;
+            l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            l.DoubleClick += new System.EventHandler(this.l_Edit_Click);
+            l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
+            l.Tag = _id;
+
+            Button del = new Button();
+            del.Location = new System.Drawing.Point(360, 50);
+            del.Name = "D";
+            del.Size = new System.Drawing.Size(25, 25);
+            del.TabIndex = 0;
+            del.Text = "D";
+            del.UseVisualStyleBackColor = true;
+            del.Click += new System.EventHandler(this.DEL_Click);
+            del.Tag = _id;
+
+            Button move = new Button();
+            move.Location = new System.Drawing.Point(360, 10);
+            move.Name = "M";
+            move.Size = new System.Drawing.Size(25, 25);
+            move.TabIndex = 1;
+            move.Text = "M";
+            move.UseVisualStyleBackColor = true;
+            move.Click += new System.EventHandler(this.move_Click);
+            move.Tag = _id;
+
+            TextBox t = new TextBox();
+            t.Location = new System.Drawing.Point(8, 18 + (text_cont++) * 100);
+            t.Name = "textBox";
+            t.Size = new System.Drawing.Size(400, 85);
+            t.Text = l.Text;
+            t.Font = new Font(t.Font.FontFamily, 15, t.Font.Style);
+            t.TabIndex = 1;
+            t.DoubleClick += new System.EventHandler(this.t_Edit_Click);
+            t.TextChanged += new System.EventHandler(this.TextChanged);
+            t.Multiline = true;
+            t.Tag = _id;
+
+
+            is_writing = true;
+
+            l.Controls.Add(del);
+            l.Controls.Add(move);
+
+            item i = new item();
+            i._l = l;
+            i._del = del;
+            i._move = move;
+            i._t = t;
+            i.id = _id++;
+            _items._item.Add(i);
+        }
+        public void DEL_Click(object sender, EventArgs e)
+        {
+            this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;
             Button btn = (Button)sender;
             int id = (int)btn.Tag;
-            int top=0;
-            foreach (item i in items)
+            int top = 0;
+            foreach (item i in _items._item)
             {
                 if (id == i.id)
                 {
-                    top = i._l.Top; 
+                    top = i._l.Top;
                     break;
                 }
             }
-            foreach (item i in items)
+            foreach (item i in _items._item)
             {
                 if (top < i._l.Top)
                 {
-                    i._l.Top-=100;
+                    i._l.Top -= 100;
                     i._t.Top -= 100;
 
                 }
             }
-            foreach (item i in items)
+            foreach (item i in _items._item)
             {
-                Console.WriteLine(top==i._l.Top);
                 if (i._l.Top == top)
                 {
                     this.panel2.Controls.Remove(i._l);
@@ -212,22 +315,17 @@ namespace HCIFinal
                     this.panel2.Controls.Remove(i._move);
                     this.panel2.Controls.Remove(i._t);
                     this.text_cont--;
-                    items.Remove(i);
+                    _items._item.Remove(i);
                     break;
                 }
-                Console.WriteLine(i._l.Top);
             }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            foreach (item i in items)
-            {
-                if (i._l.Visible)
-                    i._l.Visible = false;
-                else i._l.Visible = true;
-                break;
-            }
+            this._form1.Visible = true;
+            this.Visible = false;
+            //this.Close();
         }
 
 
@@ -235,7 +333,7 @@ namespace HCIFinal
         {
             TextBox t = (TextBox)sender;
             int id = (int)t.Tag;
-            foreach (item i in items)
+            foreach (item i in _items._item)
             {
                 if (id == i.id)
                 {
@@ -245,13 +343,29 @@ namespace HCIFinal
 
             }
         }
+        private void move_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            int id = (int)btn.Tag;
+            
+            foreach (item i in _items._item)
+            {
+                if (id == i.id)
+                {
+                    this._form1.moveChoose(this,_items.id, i.id, i._l.Text);
+                    break;
+                }
+            }
+            this._form1.Visible = true;
+            
+            this.Visible = false;
+        }
         private void l_Edit_Click(object sender, EventArgs e)
         {
-            
+
             Label l = (Label)sender;
             int id = (int)l.Tag;
-            Console.WriteLine(l.Top);
-            foreach (item i in items)
+            foreach (item i in _items._item)
             {
                 if (id == i.id)
                 {
@@ -275,8 +389,7 @@ namespace HCIFinal
         {
             TextBox t = (TextBox)sender;
             int id = (int)t.Tag;
-            Console.WriteLine(t.Top);
-            foreach (item i in items)
+            foreach (item i in _items._item)
             {
                 if (id == i.id)
                 {
@@ -297,4 +410,5 @@ namespace HCIFinal
             }
         }
     }
+    
 }
