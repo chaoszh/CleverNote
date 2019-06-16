@@ -173,7 +173,7 @@ namespace HCIFinal
             del.Click += new System.EventHandler(this.DEL_Click);
             del.Tag = _id;
 
-            Button move = new Button();                                                //but移动ton
+            Button move = new Button();                                                //移动button
             move.Location = new System.Drawing.Point(360, 10);
             move.Name = "M";
             move.Size = new System.Drawing.Size(25, 25);
@@ -214,7 +214,7 @@ namespace HCIFinal
             //this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Maximum;
             //this.Controls.Add(tex);
         }
-        public void MOVE_ADD(string text)         //添加一个文本为text的item， for_GJY_改过的， for_ZH调用这个API就可以了
+        public void MOVE_ADD(string text)         //添加一个文本为text的item， for_GJY_改过的， for_ZC调用这个API就可以了
         {
             this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;
 
