@@ -11,14 +11,12 @@ using System.Windows.Forms;
 
 namespace HCIFinal
 {
-    public partial class Form2 : Form
+    public partial class Form2 : Form           //文件夹（分类、标签）窗口
     {
-        private Point mouse_offset;
-        private bool is_writing = false;
-        private int text_cont = 0;
-        private int _id = 0;
-        public bool is_moving = false;
-        public struct ditem
+        private int text_cont = 0;              //item个数
+        private int _id = 0;                    //item id
+        public bool is_moving = false;          //是否正处于移动状态（item在文件夹间移动）
+        public struct ditem                     //文件夹item
         {
             public int id;
             public Label _l;
@@ -26,23 +24,24 @@ namespace HCIFinal
             public Button _del;
             public TextBox _t;
         };
-        public struct ditems
+        public struct ditems                    //文件夹item数组
         {
             public int id;
             public ArrayList _item;
         }
-        Form1 movingForm;
+        Form1 movingForm;                       //以下是处理移动状态时的传参
         int movingID;
         string movingSTR;
         int movingFID;
         private ArrayList _items = new ArrayList();
         public ArrayList itemList = new ArrayList();
+        public ArrayList sonForm = new ArrayList();     //子窗口数组
         //GlobalMouseHandler 
         public Form2()
         {
             InitializeComponent();
         }
-        public void moveChoose(Form1 f,int f_id, int id, string content)
+        public void moveChoose(Form1 f,int f_id, int id, string content)   //form1进入移动状态时调用
         {
             is_moving = true;
             this.PinButton.Visible = false;
@@ -108,13 +107,13 @@ namespace HCIFinal
         #endregion
 
         #region navigator bar
-        private void ExitButton_Click(object sender, EventArgs e)
+        private void ExitButton_Click(object sender, EventArgs e)             //退出
         {
             this.Close();
         }
 
         private bool pinned = true;
-        private void PinButton_Click(object sender, EventArgs e)
+        private void PinButton_Click(object sender, EventArgs e)              //置顶
         {
             if (pinned == true)
             {
@@ -128,13 +127,13 @@ namespace HCIFinal
         }
         #endregion
 
-        private void AddButton_Click(object sender, EventArgs e)
+        private void AddButton_Click(object sender, EventArgs e)                //添加ditem, for_HYL UI主要在这里改
         {
-            this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;
+            this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;   //滚动条
             //System.Threading.Thread.Sleep(500);
 
 
-            Label l = new Label();
+            Label l = new Label();                                               //文本框label
             l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             l.Location = new System.Drawing.Point(8+(text_cont%2)*200, 18 + (text_cont/2) * 100);
             
@@ -149,7 +148,7 @@ namespace HCIFinal
             l.Tag = _id;
 
 
-            Button edit = new Button();
+            Button edit = new Button();                                         //编辑按钮
             edit.Location = new System.Drawing.Point(150, 6);
             edit.Name = "E";
             edit.Size = new System.Drawing.Size(25, 25);
@@ -160,7 +159,7 @@ namespace HCIFinal
             edit.Tag = _id;
 
 
-            TextBox t = new TextBox();
+            TextBox t = new TextBox();                                          //重命名时的修改框
             t.Location = new System.Drawing.Point(8 + (text_cont % 2) * 200, 18 + (text_cont / 2) * 100);
             t.Name = "textBox";
             t.Size = new System.Drawing.Size(180, 85);
@@ -173,8 +172,7 @@ namespace HCIFinal
             t.Tag = _id;
             text_cont++;
 
-            is_writing = true;
-            this.panel2.Controls.Add(l);
+            this.panel2.Controls.Add(l);                            //添加操作，不用改
             l.Controls.Add(edit);
             this.panel2.Controls.Add(t);
             l.Visible = false;
@@ -189,22 +187,59 @@ namespace HCIFinal
             //this.Controls.Add(tex);
         }
 
-        private void document_Click(object sender, EventArgs e)
+        private void document_Click(object sender, EventArgs e)             //for_GJY_改过的
         {
             Label l = (Label)sender;
-            Form1 frm1 = new Form1(this, l.Text, (int)l.Tag);
-            //frm1.MdiParent = this;
-            frm1.Show();
+            bool find = false;
+            foreach(Form1 f in sonForm)
+            {
+                if(f.f_id == (int)l.Tag)
+                {
+                    Console.WriteLine("find");
+                    f.Visible = true;
+                    find = true;
+                }
+            }
+            if (!find)
+            {
+                Console.WriteLine("new");
+                Form1 frm1 = new Form1(this, l.Text, (int)l.Tag);
+                frm1.StartPosition = FormStartPosition.Manual;
+                frm1.Location = new Point(this.Location.X, this.Location.Y);
+                //frm1.MdiParent = this;
+                frm1.Show();
+                sonForm.Add(frm1);
+            }
+            
             this.Visible = false;
         } 
-        private void move_Click(object sender, EventArgs e)
+        private void move_Click(object sender, EventArgs e)              //for_GJY_改过的
         {
             if (is_moving)
             {
                 Label l = (Label)sender;
                 bool find = false;
-                Form1 frm1 = new Form1(this, l.Text, (int)l.Tag);
-                frm1.MOVE_ADD(movingSTR);
+                foreach (Form1 f in sonForm)
+                {
+                    Console.WriteLine(f.f_id);
+                    Console.WriteLine(l.Tag);
+                    if (f.f_id == (int)l.Tag)
+                    {
+                        Console.WriteLine("find");
+                        Console.WriteLine(movingSTR);
+                        f.MOVE_ADD(movingSTR);
+                        find = true;
+                    }
+                }
+                if (!find)
+                {
+                    Form1 frm1 = new Form1(this, l.Text, (int)l.Tag);
+                    Console.WriteLine("new");
+                    frm1.StartPosition = FormStartPosition.Manual;
+                    frm1.Location = new Point(this.Location.X, this.Location.Y);
+                    sonForm.Add(frm1);
+                    frm1.MOVE_ADD(movingSTR);
+                }
                 foreach (Form1.items i in itemList)
                 {
                     if (movingFID == i.id)

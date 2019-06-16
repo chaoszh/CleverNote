@@ -11,15 +11,14 @@ using System.Windows.Forms;
 
 namespace HCIFinal
 {
-    public partial class Form1 : Form
+    public partial class Form1 : Form            //内部（todolist item）窗口
     {
-        private Form2 _form1;
-        private Point mouse_offset;
-        private bool is_writing = false;
+        private Form2 _form1;                    //属性类似Form2
         private int text_cont = 0;
-        private int _id = 0;
-        private string _title;
-        public struct item
+        private int _id;
+        public int f_id;         //for_GJY_改过的
+        private string _title;   //标题
+        public struct item       //todolist每一条的item
         {
             public int id;
             public Label _l;
@@ -27,7 +26,7 @@ namespace HCIFinal
             public Button _del;
             public TextBox _t;
         };
-        public struct items
+        public struct items      //item数组
         {
             public int id;
             public ArrayList _item;
@@ -41,10 +40,11 @@ namespace HCIFinal
         {
             InitializeComponent();
         }
-        public Form1(Form2 form, string title, int id) : this()
+        public Form1(Form2 form, string title, int id) : this()            //由form2生成form1时调用， for_GJY_改过的
         {
             _form1 = form;
             _title = title;
+            f_id = id;
             this.folderName.Text = this._title;
             bool find = false;
             foreach (items i in form.itemList)
@@ -126,14 +126,14 @@ namespace HCIFinal
         #endregion
 
         #region navigator bar
-        private void ExitButton_Click(object sender, EventArgs e)
+        private void ExitButton_Click(object sender, EventArgs e)    //退出
         {
             _form1.Close();
             this.Close();
         }
 
         private bool pinned = true;
-        private void PinButton_Click(object sender, EventArgs e)
+        private void PinButton_Click(object sender, EventArgs e)     //置顶
         {
             if (pinned == true)
             {
@@ -148,14 +148,10 @@ namespace HCIFinal
         #endregion
 
 
-        private void AddButton_Click(object sender, EventArgs e)
+        private void AddButton_Click(object sender, EventArgs e)       //添加按钮， for_HYL, 也是在这里改样式， for_GJY 改过的
         {
-            this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;
-            //System.Threading.Thread.Sleep(500);
-            Label pos = new Label();
-            pos.Location = new System.Drawing.Point(8, 18 + (text_cont) * 100);
-            pos.Size = new System.Drawing.Size(400, 85);
-            Label l = new Label();
+            this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;    //滚动条
+            Label l = new Label();                                               //文本label
             l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             l.Location = new System.Drawing.Point(8, 18 + (text_cont) * 100);
             l.Name = "新消息";
@@ -167,7 +163,7 @@ namespace HCIFinal
             l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
             l.Tag = _id;
 
-            Button del = new Button();
+            Button del = new Button();                                                //删除button
             del.Location = new System.Drawing.Point(360, 50);
             del.Name = "D";
             del.Size = new System.Drawing.Size(25, 25);
@@ -177,7 +173,7 @@ namespace HCIFinal
             del.Click += new System.EventHandler(this.DEL_Click);
             del.Tag = _id;
 
-            Button move = new Button();
+            Button move = new Button();                                                //but移动ton
             move.Location = new System.Drawing.Point(360, 10);
             move.Name = "M";
             move.Size = new System.Drawing.Size(25, 25);
@@ -187,7 +183,7 @@ namespace HCIFinal
             move.Click += new System.EventHandler(this.move_Click);
             move.Tag = _id;
 
-            TextBox t = new TextBox();
+            TextBox t = new TextBox();                                                //修改时的输入文本框
             t.Location = new System.Drawing.Point(8, 18 + (text_cont++) * 100);
             t.Name = "textBox";
             t.Size = new System.Drawing.Size(400, 85);
@@ -200,9 +196,8 @@ namespace HCIFinal
             t.Tag = _id;
 
 
-            is_writing = true;
 
-            this.panel2.Controls.Add(l);
+            this.panel2.Controls.Add(l);   //添加操作
             l.Controls.Add(del);
             l.Controls.Add(move);
 
@@ -219,11 +214,9 @@ namespace HCIFinal
             //this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Maximum;
             //this.Controls.Add(tex);
         }
-        public void MOVE_ADD(string text)
+        public void MOVE_ADD(string text)         //添加一个文本为text的item， for_GJY_改过的， for_ZH调用这个API就可以了
         {
             this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;
-
-            Console.Write("666");
 
             Label l = new Label();
             l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -270,10 +263,11 @@ namespace HCIFinal
             t.Tag = _id;
 
 
-            is_writing = true;
-
             l.Controls.Add(del);
             l.Controls.Add(move);
+
+            this.panel2.Controls.Add(l);
+            this.panel2.Controls.Add(t);
 
             item i = new item();
             i._l = l;
@@ -283,7 +277,7 @@ namespace HCIFinal
             i.id = _id++;
             _items._item.Add(i);
         }
-        public void DEL_Click(object sender, EventArgs e)
+        public void DEL_Click(object sender, EventArgs e)      //删除
         {
             this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;
             Button btn = (Button)sender;
@@ -321,7 +315,7 @@ namespace HCIFinal
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)     //返回button
         {
             this._form1.Visible = true;
             this.Visible = false;
@@ -343,7 +337,7 @@ namespace HCIFinal
 
             }
         }
-        private void move_Click(object sender, EventArgs e)
+        private void move_Click(object sender, EventArgs e)            //移动
         {
             Button btn = (Button)sender;
             int id = (int)btn.Tag;
