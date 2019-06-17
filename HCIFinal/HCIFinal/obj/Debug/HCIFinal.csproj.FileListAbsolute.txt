@@ -19,3 +19,14 @@ C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.
 C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.pdb
 C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Form1.resources
 C:\Users\hasee\Downloads\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Form2.resources
+D:\学习资料\hci大\最新\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csprojAssemblyReference.cache
+D:\学习资料\hci大\最新\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.exe
+D:\学习资料\hci大\最新\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.pdb
+D:\学习资料\hci大\最新\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Form1.resources
+D:\学习资料\hci大\最新\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Form2.resources
+D:\学习资料\hci大\最新\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Properties.Resources.resources
+D:\学习资料\hci大\最新\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csproj.GenerateResource.cache
+D:\学习资料\hci大\最新\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csproj.CoreCompileInputs.cache
+D:\学习资料\hci大\最新\CleverNote-master\HCIFinal\HCIFinal\bin\Debug\HCIFinal.exe.config
+D:\学习资料\hci大\最新\CleverNote-master\HCIFinal\HCIFinal\bin\Debug\HCIFinal.exe
+D:\学习资料\hci大\最新\CleverNote-master\HCIFinal\HCIFinal\bin\Debug\HCIFinal.pdb

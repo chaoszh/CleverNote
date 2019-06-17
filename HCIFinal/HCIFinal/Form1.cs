@@ -13,6 +13,7 @@ namespace HCIFinal
 {
     public partial class Form1 : Form            //内部（todolist item）窗口
     {
+        private Point mouse_offset;
         private Form2 _form1;                    //属性类似Form2
         private int text_cont = 0;
         private int _id;
@@ -25,6 +26,18 @@ namespace HCIFinal
             public Button _move;
             public Button _del;
             public TextBox _t;
+            public void setlocation(int x, int y)
+            {
+                Point p = new Point(x, y);
+                _l.Location = p;
+                _t.Location = p;
+                _move.Location = new Point(p.X + 355, p.Y-10 );
+                _move.BringToFront();
+                _del.Location = new Point(p.X + 355, p.Y +30);
+                _del.BringToFront();
+
+               
+            }
         };
         public struct items      //item数组
         {
@@ -69,7 +82,58 @@ namespace HCIFinal
                 this.panel2.Controls.Add(i._t);
             }
         }
+        private void TextBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouse_offset = new Point(-e.X, -e.Y);
+        }
 
+        private item return_this_itsm(object sender,Point p)
+        {
+         
+            foreach (item i in _items._item)
+            {
+                if(p.Y== i._l.Location.Y)
+                {
+                    return i;
+                }
+            }
+            return new item();
+        }
+
+        private void TextBox_MouseUp(object sender, MouseEventArgs e)//鼠标抬起换位置
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                Point mousePos = Control.MousePosition;
+                mousePos.Offset(mouse_offset.X, mouse_offset.Y);
+                bool down = false;
+
+           
+                foreach (item i in _items._item)
+                {
+
+                    item t = (item)i;
+                        if (mouse_offset.X - t._l.Location.X != 0 && mouse_offset.Y - t._l.Location.Y != 0)
+                        {
+                            if (((Control)sender).Parent.PointToClient(mousePos).X - t._l.Location.X <= 100 && ((Control)sender).Parent.PointToClient(mousePos).X - t._l.Location.X >= -100)
+                            {
+                                if (((Control)sender).Parent.PointToClient(mousePos).Y - t._l.Location.Y <= 50 && ((Control)sender).Parent.PointToClient(mousePos).Y - t._l.Location.Y >= -50)
+                                {
+                                    item this_sander = return_this_itsm(sender, ((Control)sender).Location);
+                                    int x = t._l.Location.X;
+                                    int y = t._l.Location.Y;
+                                    //t._t.Location = new Point(((Control)sender).Location.X, ((Control)sender).Location.Y);
+                                    t.setlocation(((Control)sender).Location.X, ((Control)sender).Location.Y);
+                                    //((Control)sender).Location = new Point(x, y);
+                                    this_sander.setlocation(x, y);
+                                    down = true;
+                                }
+                            }
+                        }
+                    
+                }
+            }
+        }
 
         #region 窗口拖动、大小
         /// <summary>
@@ -162,6 +226,10 @@ namespace HCIFinal
             l.DoubleClick += new System.EventHandler(this.l_Edit_Click);
             l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
             l.Tag = _id;
+
+            //甘某人加的移动
+            l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
+            l.MouseUp += new System.Windows.Forms.MouseEventHandler(TextBox_MouseUp);
 
             Button del = new Button();                                                //删除button
             del.Location = new System.Drawing.Point(360, 50);

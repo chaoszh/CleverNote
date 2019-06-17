@@ -13,6 +13,7 @@ namespace HCIFinal
 {
     public partial class Form2 : Form           //文件夹（分类、标签）窗口
     {
+        private Point mouse_offset;//用作移动
         private int text_cont = 0;              //item个数
         private int _id = 0;                    //item id
         public bool is_moving = false;          //是否正处于移动状态（item在文件夹间移动）
@@ -23,6 +24,13 @@ namespace HCIFinal
             public Button _move;
             public Button _del;
             public TextBox _t;
+            public void setlocation(int x, int y)//设置位置用作移动
+            {
+                Point p = new Point(x, y);
+                _l.Location = p;
+                // _del.Location = new Point(p.X+150,p.Y+6);
+                _t.Location = p;
+            }
         };
         public struct ditems                    //文件夹item数组
         {
@@ -51,6 +59,41 @@ namespace HCIFinal
             this.movingForm = f;
             this.movingID = id;
             this.movingSTR = content;
+        }
+        private void TextBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouse_offset = new Point(-e.X, -e.Y);
+        }
+
+        private void TextBox_MouseUp(object sender, MouseEventArgs e)//鼠标抬起换位置
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                Point mousePos = Control.MousePosition;
+                mousePos.Offset(mouse_offset.X, mouse_offset.Y);
+                bool down = false;
+                foreach (ditem i in _items)
+                {
+
+                    {
+                        ditem t = (ditem)i;
+                        if (mouse_offset.X - t._l.Location.X != 0 && mouse_offset.Y - t._l.Location.Y != 0)
+                        {
+                            if (((Control)sender).Parent.PointToClient(mousePos).X - t._l.Location.X <= 100 && ((Control)sender).Parent.PointToClient(mousePos).X - t._l.Location.X >= -100)
+                            {
+                                if (((Control)sender).Parent.PointToClient(mousePos).Y - t._l.Location.Y <= 50 && ((Control)sender).Parent.PointToClient(mousePos).Y - t._l.Location.Y >= -50)
+                                {
+                                    int x = t._l.Location.X;
+                                    int y = t._l.Location.Y;
+                                    t.setlocation(((Control)sender).Location.X, ((Control)sender).Location.Y);
+                                   ((Control)sender).Location = new Point(x, y);
+                                    down = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         #region 窗口拖动、大小
         /// <summary>
@@ -146,9 +189,13 @@ namespace HCIFinal
             l.Click += new System.EventHandler(this.move_Click);
             l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
             l.Tag = _id;
+            //用于移动
+            l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
+            l.MouseUp += new System.Windows.Forms.MouseEventHandler(TextBox_MouseUp);
+            l.Click += new System.EventHandler(this.Edit_Click_l);
+            
 
-
-            Button edit = new Button();                                         //编辑按钮
+            /*Button edit = new Button();                                         //编辑按钮
             edit.Location = new System.Drawing.Point(150, 6);
             edit.Name = "E";
             edit.Size = new System.Drawing.Size(25, 25);
@@ -156,7 +203,7 @@ namespace HCIFinal
             edit.Text = "E";
             edit.UseVisualStyleBackColor = true;
             edit.Click += new System.EventHandler(this.Edit_Click);
-            edit.Tag = _id;
+            edit.Tag = _id;*/
 
 
             TextBox t = new TextBox();                                          //重命名时的修改框
@@ -173,12 +220,12 @@ namespace HCIFinal
             text_cont++;
 
             this.panel2.Controls.Add(l);                            //添加操作，不用改
-            l.Controls.Add(edit);
+            //l.Controls.Add(edit);
             this.panel2.Controls.Add(t);
             l.Visible = false;
             ditem i = new ditem();
             i._l = l;
-            i._del = edit;
+            //i._del = edit;
             i._t = t;
             i.id = _id++;
             _items.Add(i);
@@ -279,31 +326,36 @@ namespace HCIFinal
 
             }
         }
-        private void Edit_Click(object sender, EventArgs e)
+
+        private void Edit_Click_l(object sender, EventArgs e)
         {
-
-            Button l = (Button)sender;
-            int id = (int)l.Tag;
-            foreach (ditem i in _items)
+            MouseEventArgs mouse_e = (MouseEventArgs)e;
+            if (mouse_e.Button == MouseButtons.Left)
             {
-                if (id == i.id)
+                Label l = (Label)sender;
+                int id = (int)l.Tag;
+                foreach (ditem i in _items)
                 {
-                    if (i._l.Visible)
+                    if (id == i.id)
                     {
-                        i._l.Visible = false;
-                        i._t.Visible = true;
+                        if (i._l.Visible)
+                        {
+                            i._l.Visible = false;
+                            i._t.Visible = true;
+                        }
+
+                        else
+                        {
+                            i._l.Visible = true;
+                            i._t.Visible = false;
+                        }
+                        break;
                     }
 
-                    else
-                    {
-                        i._l.Visible = true;
-                        i._t.Visible = false;
-                    }
-                    break;
                 }
-
             }
         }
+
         private void t_Edit_Click(object sender, EventArgs e)
         {
             TextBox t = (TextBox)sender;
@@ -329,6 +381,10 @@ namespace HCIFinal
             }
         }
 
+        private void Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 
 }
