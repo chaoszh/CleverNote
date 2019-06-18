@@ -17,6 +17,7 @@ namespace HCIFinal
         private int text_cont = 0;              //item个数
         private int _id = 0;                    //item id
         public bool is_moving = false;          //是否正处于移动状态（item在文件夹间移动）
+        public bool is_show = true;             //窗口隐藏与否
         public struct ditem                     //文件夹item
         {
             public int id;
@@ -49,6 +50,43 @@ namespace HCIFinal
         {
             InitializeComponent();
         }
+
+        public void changeShowState()   //show or hide
+        {
+            if (is_show)
+            {
+                this.Visible = false;
+                foreach (Form1 f in sonForm)
+                {
+                    f.Visible = false;
+                }
+                is_show = false;
+            }
+            else
+            {
+                is_show = true;
+                this.Visible = true;
+            }
+        }
+        public void ADD(string text)    //add item
+        {
+            bool success = false;
+            foreach (Form1 f in sonForm)
+            {
+                f.MOVE_ADD(text);
+                success = true;
+                break;
+            }
+            if(!success)
+            {
+                Form1 frm1 = new Form1(this, Text, 0);
+                frm1.StartPosition = FormStartPosition.Manual;
+                frm1.Location = new Point(this.Location.X, this.Location.Y);
+                //frm1.MdiParent = this;
+                sonForm.Add(frm1);
+            }
+        }
+
         public void moveChoose(Form1 f,int f_id, int id, string content)   //form1进入移动状态时调用
         {
             is_moving = true;
