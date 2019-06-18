@@ -242,14 +242,12 @@ namespace HCIFinal
             {
                 if(f.f_id == (int)l.Tag)
                 {
-                    Console.WriteLine("find");
                     f.Visible = true;
                     find = true;
                 }
             }
             if (!find)
             {
-                Console.WriteLine("new");
                 Form1 frm1 = new Form1(this, l.Text, (int)l.Tag);
                 frm1.StartPosition = FormStartPosition.Manual;
                 frm1.Location = new Point(this.Location.X, this.Location.Y);
@@ -268,12 +266,9 @@ namespace HCIFinal
                 bool find = false;
                 foreach (Form1 f in sonForm)
                 {
-                    Console.WriteLine(f.f_id);
-                    Console.WriteLine(l.Tag);
                     if (f.f_id == (int)l.Tag)
                     {
-                        Console.WriteLine("find");
-                        Console.WriteLine(movingSTR);
+
                         f.MOVE_ADD(movingSTR);
                         find = true;
                     }
@@ -281,7 +276,6 @@ namespace HCIFinal
                 if (!find)
                 {
                     Form1 frm1 = new Form1(this, l.Text, (int)l.Tag);
-                    Console.WriteLine("new");
                     frm1.StartPosition = FormStartPosition.Manual;
                     frm1.Location = new Point(this.Location.X, this.Location.Y);
                     sonForm.Add(frm1);
@@ -297,7 +291,6 @@ namespace HCIFinal
                             {
                                 movingForm.DEL_Click(j._del, EventArgs.Empty);
                                 break;
-                                //Console.WriteLine("6666");
                                 
                             }
                         }

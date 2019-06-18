@@ -28,13 +28,19 @@ namespace HCIFinal
             public TextBox _t;
             public void setlocation(int x, int y)
             {
-                Point p = new Point(x, y);
-                _l.Location = p;
-                _t.Location = p;
-                _move.Location = new Point(p.X + 355, p.Y-10 );
-                _move.BringToFront();
-                _del.Location = new Point(p.X + 355, p.Y +30);
-                _del.BringToFront();
+                Point p = new Point(_l.Location.X, y);
+                if (_l != null)
+                {
+                    _l.Location = p;
+                }
+                if (_t != null)
+                {
+                    _t.Location = p;
+                }
+                //_move.Location = new Point(p.X + 355, p.Y-10 );
+                //_move.BringToFront();
+                //_del.Location = new Point(p.X + 355, p.Y +30);
+                //_del.BringToFront();
 
                
             }
@@ -45,9 +51,10 @@ namespace HCIFinal
             public ArrayList _item;
         }
         public items _items;
-
-        
-
+        private item movingItem;
+        public bool is_down = false;
+        public Point delta;
+        public item moving;
         //GlobalMouseHandler 
         public Form1()
         {
@@ -81,10 +88,86 @@ namespace HCIFinal
 
                 this.panel2.Controls.Add(i._t);
             }
+            movingItem = createMovingItem();
         }
+        private item createMovingItem()
+        {
+            Label l = new Label();                                               //文本label
+            l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            l.Location = new System.Drawing.Point(8, 18 + (text_cont) * 100);
+            l.Name = "新消息";
+            l.Size = new System.Drawing.Size(400, 85);
+            l.TabIndex = 6;
+            l.Text = "新消息";
+            l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            l.DoubleClick += new System.EventHandler(this.l_Edit_Click);
+            l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
+            l.Tag = -1;
+
+            Button del = new Button();                                                //删除button
+            del.Location = new System.Drawing.Point(360, 50);
+            del.Name = "D";
+            del.Size = new System.Drawing.Size(25, 25);
+            del.TabIndex = 0;
+            del.Text = "D";
+            del.UseVisualStyleBackColor = true;
+            del.Click += new System.EventHandler(this.DEL_Click);
+            del.Tag = -1;
+
+            Button move = new Button();                                                //移动button
+            move.Location = new System.Drawing.Point(360, 10);
+            move.Name = "M";
+            move.Size = new System.Drawing.Size(25, 25);
+            move.TabIndex = 1;
+            move.Text = "M";
+            move.UseVisualStyleBackColor = true;
+            move.Click += new System.EventHandler(this.move_Click);
+            move.Tag = -1;
+
+
+
+            this.panel2.Controls.Add(l);   //添加操作
+            l.Controls.Add(del);
+            l.Controls.Add(move);
+
+            l.Visible = false;
+            item i = new item();
+            i._l = l;
+            i._del = del;
+            i._move = move;
+            i.id = -1;
+            return i;
+        }
+        
+        
         private void TextBox_MouseDown(object sender, MouseEventArgs e)
         {
             mouse_offset = new Point(-e.X, -e.Y);
+            Label movingLabel = (Label)sender;
+            foreach (item i in _items._item)
+            {
+                if(i.id == (int)movingLabel.Tag)
+                {
+                    moving = i;
+                    moving._l.Visible = false;
+                    moving._t.Visible = false;
+                    movingItem._l.Visible = true;
+                    movingItem._l.Text = moving._l.Text;
+                    
+                }
+            }
+            delta.X = movingItem._l.Location.X-mouse_offset.X;
+            delta.Y = movingItem._l.Location.Y - mouse_offset.Y;
+
+            if (is_down)
+            {
+                Point mousePos = Control.MousePosition;
+                movingItem.setlocation(((Control)sender).Parent.PointToClient(mousePos).X + delta.X, ((Control)sender).Parent.PointToClient(mousePos).Y);
+            }
+
+
+
+            is_down = true;
         }
 
         private item return_this_itsm(object sender,Point p)
@@ -99,9 +182,38 @@ namespace HCIFinal
             }
             return new item();
         }
+        private void TextBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point mousePos = Control.MousePosition;
+            if (is_down)
+            {
+                movingItem.setlocation(((Control)sender).Parent.PointToClient(mousePos).X+delta.X, ((Control)sender).Parent.PointToClient(mousePos).Y);
 
+
+                foreach (item i in _items._item)
+                {
+                    item t = (item)i;
+                    if (mouse_offset.Y - t._l.Location.Y != 0)
+                    {
+                        if (movingItem._l.Location.Y - t._l.Location.Y <= 50 && movingItem._l.Location.Y - t._l.Location.Y >= -50)
+                        {
+                            item this_sander = return_this_itsm(sender, ((Control)sender).Location);
+
+                            int x = t._l.Location.X;
+                            int y = t._l.Location.Y;
+                            t.setlocation(moving._l.Location.X, moving._l.Location.Y);
+                            moving.setlocation(x, y);
+                        }
+                    }
+
+                }
+            }
+
+        }
+        
         private void TextBox_MouseUp(object sender, MouseEventArgs e)//鼠标抬起换位置
         {
+            is_down = false;
             if (e.Button == MouseButtons.Left)
             {
                 Point mousePos = Control.MousePosition;
@@ -111,26 +223,38 @@ namespace HCIFinal
            
                 foreach (item i in _items._item)
                 {
-
                     item t = (item)i;
-                        if (mouse_offset.X - t._l.Location.X != 0 && mouse_offset.Y - t._l.Location.Y != 0)
+                    if (mouse_offset.X - t._l.Location.X != 0 && mouse_offset.Y - t._l.Location.Y != 0)
+                    {
+                        if (((Control)sender).Parent.PointToClient(mousePos).X - t._l.Location.X <= 100 && ((Control)sender).Parent.PointToClient(mousePos).X - t._l.Location.X >= -100)
                         {
-                            if (((Control)sender).Parent.PointToClient(mousePos).X - t._l.Location.X <= 100 && ((Control)sender).Parent.PointToClient(mousePos).X - t._l.Location.X >= -100)
+                            if (((Control)sender).Parent.PointToClient(mousePos).Y - t._l.Location.Y <= 50 && ((Control)sender).Parent.PointToClient(mousePos).Y - t._l.Location.Y >= -50)
                             {
-                                if (((Control)sender).Parent.PointToClient(mousePos).Y - t._l.Location.Y <= 50 && ((Control)sender).Parent.PointToClient(mousePos).Y - t._l.Location.Y >= -50)
-                                {
-                                    item this_sander = return_this_itsm(sender, ((Control)sender).Location);
-                                    int x = t._l.Location.X;
-                                    int y = t._l.Location.Y;
-                                    //t._t.Location = new Point(((Control)sender).Location.X, ((Control)sender).Location.Y);
-                                    t.setlocation(((Control)sender).Location.X, ((Control)sender).Location.Y);
-                                    //((Control)sender).Location = new Point(x, y);
-                                    this_sander.setlocation(x, y);
-                                    down = true;
-                                }
+                                item this_sander = return_this_itsm(sender, ((Control)sender).Location);
+
+                                int x = t._l.Location.X;
+                                int y = t._l.Location.Y;
+
+                                t.setlocation(((Control)sender).Location.X, ((Control)sender).Location.Y);
+                                ((Control)sender).Location = new Point(x, y);
+                                this_sander.setlocation(x, y);
+                                this_sander._l.Visible = true;
+                                this_sander._t.Visible = true;
+                                movingItem._l.Visible = false;
+                                down = true;
                             }
                         }
+                    }
                     
+                }
+                
+                if (!down)
+                {
+                    item this_sander = return_this_itsm(sender, ((Control)sender).Location);
+                    movingItem.setlocation(mouse_offset.X, mouse_offset.Y);
+                    this_sander._l.Visible = true;
+                    this_sander._t.Visible = true;
+                    movingItem._l.Visible = false;
                 }
             }
         }
@@ -230,6 +354,7 @@ namespace HCIFinal
             //甘某人加的移动
             l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
             l.MouseUp += new System.Windows.Forms.MouseEventHandler(TextBox_MouseUp);
+            l.MouseMove += new System.Windows.Forms.MouseEventHandler(TextBox_MouseMove);
 
             Button del = new Button();                                                //删除button
             del.Location = new System.Drawing.Point(360, 50);
@@ -297,6 +422,10 @@ namespace HCIFinal
             l.DoubleClick += new System.EventHandler(this.l_Edit_Click);
             l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
             l.Tag = _id;
+            //甘某人加的移动
+            l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
+            l.MouseUp += new System.Windows.Forms.MouseEventHandler(TextBox_MouseUp);
+            l.MouseMove += new System.Windows.Forms.MouseEventHandler(TextBox_MouseMove);
 
             Button del = new Button();
             del.Location = new System.Drawing.Point(360, 50);
