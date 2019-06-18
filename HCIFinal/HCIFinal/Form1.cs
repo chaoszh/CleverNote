@@ -142,32 +142,36 @@ namespace HCIFinal
         
         private void TextBox_MouseDown(object sender, MouseEventArgs e)
         {
-            mouse_offset = new Point(-e.X, -e.Y);
-            Label movingLabel = (Label)sender;
-            foreach (item i in _items._item)
+            if(e.Button == MouseButtons.Left)
             {
-                if(i.id == (int)movingLabel.Tag)
+                mouse_offset = new Point(-e.X, -e.Y);
+                Label movingLabel = (Label)sender;
+                foreach (item i in _items._item)
                 {
-                    moving = i;
-                    moving._l.Visible = false;
-                    moving._t.Visible = false;
-                    movingItem._l.Visible = true;
-                    movingItem._l.Text = moving._l.Text;
-                    
+                    if (i.id == (int)movingLabel.Tag)
+                    {
+                        moving = i;
+                        moving._l.Visible = false;
+                        moving._t.Visible = false;
+                        movingItem._l.Visible = true;
+                        movingItem._l.Text = moving._l.Text;
+
+                    }
                 }
+                delta.X = movingItem._l.Location.X - mouse_offset.X;
+                delta.Y = movingItem._l.Location.Y - mouse_offset.Y;
+
+                if (is_down)
+                {
+                    Point mousePos = Control.MousePosition;
+                    movingItem.setlocation(((Control)sender).Parent.PointToClient(mousePos).X + delta.X, ((Control)sender).Parent.PointToClient(mousePos).Y);
+                }
+
+
+
+                is_down = true;
             }
-            delta.X = movingItem._l.Location.X-mouse_offset.X;
-            delta.Y = movingItem._l.Location.Y - mouse_offset.Y;
-
-            if (is_down)
-            {
-                Point mousePos = Control.MousePosition;
-                movingItem.setlocation(((Control)sender).Parent.PointToClient(mousePos).X + delta.X, ((Control)sender).Parent.PointToClient(mousePos).Y);
-            }
-
-
-
-            is_down = true;
+            
         }
 
         private item return_this_itsm(object sender,Point p)
@@ -347,7 +351,7 @@ namespace HCIFinal
             l.TabIndex = 6;
             l.Text = "新消息";
             l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            l.DoubleClick += new System.EventHandler(this.l_Edit_Click);
+            l.Click += new System.EventHandler(this.l_Edit_Click);
             l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
             l.Tag = _id;
 
@@ -553,7 +557,6 @@ namespace HCIFinal
         }
         private void l_Edit_Click(object sender, EventArgs e)
         {
-
             Label l = (Label)sender;
             int id = (int)l.Tag;
             foreach (item i in _items._item)
