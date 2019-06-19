@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace HCIFinal
 {
@@ -18,6 +19,16 @@ namespace HCIFinal
         private int _id = 0;                    //item id
         public bool is_moving = false;          //是否正处于移动状态（item在文件夹间移动）
         public bool is_show = true;             //窗口隐藏与否
+
+        [DllImport("user32.dll")]
+         public static extern bool ReleaseCapture();
+
+         [DllImport("user32.dll")]
+         public static extern bool SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
+
+         private const int VM_NCLBUTTONDOWN = 0XA1;//定义鼠标左键按下
+         private const int HTCAPTION = 2;
+
         public struct ditem                     //文件夹item
         {
             public int id;
@@ -412,9 +423,22 @@ namespace HCIFinal
             }
         }
 
-        private void Panel2_Paint(object sender, PaintEventArgs e)
+    private void Panel2_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void Panel1_MouseDown_1(object sender, MouseEventArgs e)//解决窗体不能移动
+        {
+            //为当前应用程序释放鼠标捕获
+              ReleaseCapture();
+             //发送消息 让系统误以为在标题栏上按下鼠标
+            SendMessage((IntPtr)this.Handle, VM_NCLBUTTONDOWN, HTCAPTION, 0);
         }
     }
 

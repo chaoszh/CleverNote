@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
+
 
 namespace HCIFinal
 {
@@ -19,6 +21,16 @@ namespace HCIFinal
         private int _id;
         public int f_id;         //for_GJY_改过的
         private string _title;   //标题
+
+        [DllImport("user32.dll")]//这块用来移动这个窗体
+        public static extern bool ReleaseCapture();
+
+        [DllImport("user32.dll")]
+        public static extern bool SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
+
+        private const int VM_NCLBUTTONDOWN = 0XA1;//定义鼠标左键按下
+        private const int HTCAPTION = 2;
+
         public struct item       //todolist每一条的item
         {
             public int id;
@@ -42,7 +54,7 @@ namespace HCIFinal
                 //_del.Location = new Point(p.X + 355, p.Y +30);
                 //_del.BringToFront();
 
-               
+
             }
         };
         public struct items      //item数组
@@ -138,11 +150,11 @@ namespace HCIFinal
             i.id = -1;
             return i;
         }
-        
-        
+
+
         private void TextBox_MouseDown(object sender, MouseEventArgs e)
         {
-            if(e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 mouse_offset = new Point(-e.X, -e.Y);
                 Label movingLabel = (Label)sender;
@@ -171,15 +183,15 @@ namespace HCIFinal
 
                 is_down = true;
             }
-            
+
         }
 
-        private item return_this_itsm(object sender,Point p)
+        private item return_this_itsm(object sender, Point p)
         {
-         
+
             foreach (item i in _items._item)
             {
-                if(p.Y== i._l.Location.Y)
+                if (p.Y == i._l.Location.Y)
                 {
                     return i;
                 }
@@ -191,7 +203,7 @@ namespace HCIFinal
             Point mousePos = Control.MousePosition;
             if (is_down)
             {
-                movingItem.setlocation(((Control)sender).Parent.PointToClient(mousePos).X+delta.X, ((Control)sender).Parent.PointToClient(mousePos).Y);
+                movingItem.setlocation(((Control)sender).Parent.PointToClient(mousePos).X + delta.X, ((Control)sender).Parent.PointToClient(mousePos).Y);
 
 
                 foreach (item i in _items._item)
@@ -214,7 +226,7 @@ namespace HCIFinal
             }
 
         }
-        
+
         private void TextBox_MouseUp(object sender, MouseEventArgs e)//鼠标抬起换位置
         {
             is_down = false;
@@ -224,7 +236,7 @@ namespace HCIFinal
                 mousePos.Offset(mouse_offset.X, mouse_offset.Y);
                 bool down = false;
 
-           
+
                 foreach (item i in _items._item)
                 {
                     item t = (item)i;
@@ -249,9 +261,9 @@ namespace HCIFinal
                             }
                         }
                     }
-                    
+
                 }
-                
+
                 if (!down)
                 {
                     item this_sander = return_this_itsm(sender, ((Control)sender).Location);
@@ -542,17 +554,17 @@ namespace HCIFinal
         {
             Button btn = (Button)sender;
             int id = (int)btn.Tag;
-            
+
             foreach (item i in _items._item)
             {
                 if (id == i.id)
                 {
-                    this._form1.moveChoose(this,_items.id, i.id, i._l.Text);
+                    this._form1.moveChoose(this, _items.id, i.id, i._l.Text);
                     break;
                 }
             }
             this._form1.Visible = true;
-            
+
             this.Visible = false;
         }
         private void l_Edit_Click(object sender, EventArgs e)
@@ -603,6 +615,13 @@ namespace HCIFinal
 
             }
         }
+
+        private void Panel1_MouseDown(object sender, MouseEventArgs e)//解决窗体不能移动
+        {
+            //为当前应用程序释放鼠标捕获
+            ReleaseCapture();
+            //发送消息 让系统误以为在标题栏上按下鼠标
+            SendMessage((IntPtr)this.Handle, VM_NCLBUTTONDOWN, HTCAPTION, 0);
+        }
     }
-    
 }
