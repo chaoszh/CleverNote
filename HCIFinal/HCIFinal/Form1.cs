@@ -11,6 +11,18 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
 
+#region event to do 
+/**
+* - Smooth the dragging item
+* - Add shortcutKey
+*    
+*    
+*
+*/
+#endregion
+
+
+
 namespace HCIFinal
 {
     public partial class Form1 : Form            //内部（todolist item）窗口
@@ -21,6 +33,7 @@ namespace HCIFinal
         private int _id;
         public int f_id;         //for_GJY_改过的
         private string _title;   //标题
+        public Point mouseAt;   //鼠标坐标
 
         [DllImport("user32.dll")]//这块用来移动这个窗体
         public static extern bool ReleaseCapture();
@@ -72,6 +85,7 @@ namespace HCIFinal
         {
             InitializeComponent();
         }
+        
         public Form1(Form2 form, string title, int id) : this()            //由form2生成form1时调用， for_GJY_改过的
         {
             _form1 = form;
@@ -320,6 +334,15 @@ namespace HCIFinal
                     m.LParam = IntPtr.Zero; //默认值
                     m.WParam = new IntPtr(2);//鼠标放在标题栏内
                     base.WndProc(ref m);
+                    break;
+                case 0x0312://热键
+                    switch (m.WParam.ToInt32())
+                    {
+                        //热键A
+                        case 990316:
+                            MOVE_ADD(getClipMsg());
+                            break;
+                    }
                     break;
                 default:
                     base.WndProc(ref m);
@@ -623,5 +646,76 @@ namespace HCIFinal
             //发送消息 让系统误以为在标题栏上按下鼠标
             SendMessage((IntPtr)this.Handle, VM_NCLBUTTONDOWN, HTCAPTION, 0);
         }
+
+        /*
+        private void Form1_MouseMove(object sender, MouseEventArgs e)
+        {
+            mouseAt = new Point(e.X, e.Y);
+            Console.Write(e.X +','+ e.Y);
+        }
+        */
+
+        #region 热键
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, KeyModifiers fsModifiers, Keys vk);
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        [Flags()]
+        public enum KeyModifiers
+        {
+            None=0,
+            Alt=1,
+            Ctrl=2,
+            Shift=4,
+            WindowsKey=8
+        }
+
+        //热键统一注册
+        private void ShortcutKeyActivate()
+        {
+            //F2
+            RegisterHotKey(Handle, 990316, 0, Keys.F2);
+
+        }
+
+        //热键统一注销
+        private void ShortcutKeyUnactivate()
+        {
+            //注销
+            UnregisterHotKey(Handle, 990316);
+        }
+
+        //窗口Activate时注册热键
+        private void Form1_Activated(object sender, EventArgs e)
+        {
+            ShortcutKeyActivate();
+        }
+
+        //窗口Leave时注销热键
+        private void Form1_Leave(object sender, EventArgs e)
+        {
+            ShortcutKeyUnactivate();
+        }
+
+        //从剪贴板拿取消息
+        private string getClipMsg()
+        {
+            // Declares an IDataObject to hold the data returned from the clipboard.
+            // Retrieves the data from the clipboard.
+            IDataObject iData = Clipboard.GetDataObject();
+
+            // Determines whether the data is in a format you can use.
+            if (iData.GetDataPresent(DataFormats.Text))
+            {
+                // Yes it is, so display it in a text box.
+                return (String)iData.GetData(DataFormats.Text);
+            }
+            else
+            {
+                return "无法从剪贴板获取数据";
+            }
+        }
+        #endregion
+
     }
 }
