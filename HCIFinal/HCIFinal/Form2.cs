@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace HCIFinal
 {
@@ -53,13 +54,83 @@ namespace HCIFinal
         int movingID;
         string movingSTR;
         int movingFID;
-        private ArrayList _items = new ArrayList();
+        public ArrayList _items = new ArrayList();
         public ArrayList itemList = new ArrayList();
         public ArrayList sonForm = new ArrayList();     //子窗口数组
-        //GlobalMouseHandler 
-        public Form2()
+                                                        //GlobalMouseHandler 
+        public void Read(string path)//初始化读文件还原上次关闭
+        {
+            StreamReader sr = new StreamReader(path);
+            String line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                // Console.WriteLine(line.ToString());
+                this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;   //滚动条
+                                                                                    //System.Threading.Thread.Sleep(500);
+
+
+                Label l = new Label();                                               //文本框label
+                l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+                l.Location = new System.Drawing.Point(8 + (text_cont % 2) * 200, 18 + (text_cont / 2) * 100);
+
+                l.Name = "新文件夹";
+                l.Size = new System.Drawing.Size(180, 85);
+                l.TabIndex = 6;
+                l.Text = line;
+                l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+                l.DoubleClick += new System.EventHandler(this.document_Click);
+                l.Click += new System.EventHandler(this.move_Click);
+                l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
+                l.Tag = _id;
+                //用于移动
+                l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
+                l.MouseUp += new System.Windows.Forms.MouseEventHandler(TextBox_MouseUp);
+                l.Click += new System.EventHandler(this.Edit_Click_l);
+
+
+                /*Button edit = new Button();                                         //编辑按钮
+                edit.Location = new System.Drawing.Point(150, 6);
+                edit.Name = "E";
+                edit.Size = new System.Drawing.Size(25, 25);
+                edit.TabIndex = 1;
+                edit.Text = "E";
+                edit.UseVisualStyleBackColor = true;
+                edit.Click += new System.EventHandler(this.Edit_Click);
+                edit.Tag = _id;*/
+
+
+                TextBox t = new TextBox();                                          //重命名时的修改框
+                t.Location = new System.Drawing.Point(8 + (text_cont % 2) * 200, 18 + (text_cont / 2) * 100);
+                t.Name = "textBox";
+                t.Size = new System.Drawing.Size(180, 85);
+                t.Text = l.Text;
+                t.Font = new Font(t.Font.FontFamily, 15, t.Font.Style);
+                t.TabIndex = 1;
+                t.TextChanged += new System.EventHandler(this.TextChanged);
+                t.DoubleClick += new System.EventHandler(this.t_Edit_Click);
+                t.Multiline = true;
+                t.Tag = _id;
+                text_cont++;
+
+                this.panel2.Controls.Add(l);                            //添加操作，不用改
+                                                                        //l.Controls.Add(edit);
+                this.panel2.Controls.Add(t);
+                l.Visible = false;
+                ditem i = new ditem();
+                i._l = l;
+                //i._del = edit;
+                i._t = t;
+                i.id = _id++;
+                _items.Add(i);
+            }
+            sr.Close();
+        }
+
+        public Form2()//初始化
         {
             InitializeComponent();
+            string str = System.IO.Directory.GetCurrentDirectory();
+            Read(str+"\\data.txt");
         }
 
         public void changeShowState()   //show or hide
@@ -201,6 +272,23 @@ namespace HCIFinal
         #region navigator bar
         private void ExitButton_Click(object sender, EventArgs e)             //退出
         {
+            string str = System.IO.Directory.GetCurrentDirectory();
+            FileStream fs = new FileStream(str + "\\data.txt", FileMode.Open);
+            fs.Seek(0, SeekOrigin.Begin);
+            fs.SetLength(0);
+            fs.Close();
+            //Directory.Delete((str + "\\data.txt"),true);
+            //FileStream fs1 = new FileStream((str + "\\data.txt"), FileMode.Create, FileAccess.Write);
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter((str + "\\data.txt"), true))
+            {
+                for (int i=0;i<_items.Count;i++)
+                {
+                    object i_ditem = _items[i];
+                    ditem j_ditem =(ditem) i_ditem;
+                    file.WriteLine(j_ditem._l.Text);// 直接追加文件末尾，换行 
+                }
+                file.Close();
+            }
             this.Close();
         }
 
@@ -232,7 +320,7 @@ namespace HCIFinal
             l.Name = "新文件夹";
             l.Size = new System.Drawing.Size(180, 85);
             l.TabIndex = 6;
-            l.Text = "新文件夹\n(我觉得可以有一个文件夹的图片）";
+            l.Text = "新文件夹(我觉得可以有一个文件夹的图片）";
             l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             l.DoubleClick += new System.EventHandler(this.document_Click);
             l.Click += new System.EventHandler(this.move_Click);
