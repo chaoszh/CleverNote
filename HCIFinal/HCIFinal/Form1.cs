@@ -336,13 +336,7 @@ namespace HCIFinal
                     base.WndProc(ref m);
                     break;
                 case 0x0312://热键
-                    switch (m.WParam.ToInt32())
-                    {
-                        //热键A
-                        case 990316:
-                            MOVE_ADD(getClipMsg());
-                            break;
-                    }
+                    HotKeyReact(m.WParam.ToInt32());
                     break;
                 default:
                     base.WndProc(ref m);
@@ -675,7 +669,8 @@ namespace HCIFinal
         {
             //F2
             RegisterHotKey(Handle, 990316, 0, Keys.F2);
-
+            //F3
+            RegisterHotKey(Handle, 990803, 0, Keys.Q);
         }
 
         //热键统一注销
@@ -697,6 +692,23 @@ namespace HCIFinal
             ShortcutKeyUnactivate();
         }
 
+        //快捷键响应，在WndProc()中调用的函数
+        private void HotKeyReact(int m)
+        {
+            switch (m)
+            {
+                //热键F2
+                case 990316:
+                    MOVE_ADD(getClipMsg());
+                    break;
+                //热键F3
+                case 990803:
+                    if (this.WindowState == FormWindowState.Minimized) this.WindowState = FormWindowState.Normal;
+                    else this.WindowState = FormWindowState.Minimized;
+                    break;
+            }
+        }
+
         //从剪贴板拿取消息
         private string getClipMsg()
         {
@@ -716,6 +728,6 @@ namespace HCIFinal
             }
         }
         #endregion
-
+        
     }
 }
