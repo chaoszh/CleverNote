@@ -332,6 +332,7 @@ namespace HCIFinal
         #region navigator bar
         private void ExitButton_Click(object sender, EventArgs e)    //退出
         {
+            _form1.SaveFile();
             _form1.Close();
             this.Close();
         }

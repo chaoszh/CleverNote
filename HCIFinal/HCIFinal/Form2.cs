@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace HCIFinal
 {
@@ -20,6 +21,8 @@ namespace HCIFinal
         private int _id = 0;                    //item id
         public bool is_moving = false;          //是否正处于移动状态（item在文件夹间移动）
         public bool is_show = true;             //窗口隐藏与否
+       
+
 
         [DllImport("user32.dll")]
          public static extern bool ReleaseCapture();
@@ -59,10 +62,9 @@ namespace HCIFinal
         public ArrayList sonForm = new ArrayList();     //子窗口数组
                                                         //GlobalMouseHandler 
         public void Read(string path)//初始化读文件还原上次关闭
-        {
-            StreamReader sr = new StreamReader(path);
-            String line;
-            while ((line = sr.ReadLine()) != null)
+        {   StreamReader sr = new StreamReader(path);
+            string[] result = Regex.Matches(File.ReadAllText(path), @"(?<=@).*?(?=#)").Cast<Match>().Select(S => S.Value.Trim()).ToArray();
+            foreach(string line in result)
             {
                 // Console.WriteLine(line.ToString());
                 this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;   //滚动条
@@ -123,6 +125,7 @@ namespace HCIFinal
                 i.id = _id++;
                 _items.Add(i);
             }
+            
             sr.Close();
         }
 
@@ -270,7 +273,7 @@ namespace HCIFinal
         #endregion
 
         #region navigator bar
-        private void ExitButton_Click(object sender, EventArgs e)             //退出
+        public void SaveFile()
         {
             string str = System.IO.Directory.GetCurrentDirectory();
             FileStream fs = new FileStream(str + "\\data.txt", FileMode.Open);
@@ -281,15 +284,75 @@ namespace HCIFinal
             //FileStream fs1 = new FileStream((str + "\\data.txt"), FileMode.Create, FileAccess.Write);
             using (System.IO.StreamWriter file = new System.IO.StreamWriter((str + "\\data.txt"), true))
             {
-                for (int i=0;i<_items.Count;i++)
+                for (int i = 0; i < _items.Count; i++)
                 {
                     object i_ditem = _items[i];
-                    ditem j_ditem =(ditem) i_ditem;
-                    file.WriteLine(j_ditem._l.Text);// 直接追加文件末尾，换行 
+                    ditem j_ditem = (ditem)i_ditem;
+                    file.WriteLine("@" + j_ditem._l.Text + "#");// 直接追加文件末尾，换行 
+                }
+                foreach (Form1 s in sonForm)
+                {
+                    foreach (Form1.item i in s._items._item)
+                    {
+                        string id = Convert.ToString(s.f_id);
+                        file.WriteLine("文件序号：" + id + "#文件内容：" + i._l.Text + "#");
+                    }
                 }
                 file.Close();
             }
+        }
+        private void ExitButton_Click(object sender, EventArgs e)             //退出
+        {
+            SaveFile(); 
             this.Close();
+        }
+        private void document_Click(object sender, EventArgs e)             //for_GJY_改过的
+        {
+            Label l = (Label)sender;
+            bool find = false;
+            foreach (Form1 f in sonForm)
+            {
+                if (f.f_id == (int)l.Tag)
+                {
+                    f.Visible = true;
+                    find = true;
+                }
+            }
+            if (!find)
+            {
+                Form1 frm1 = new Form1(this, l.Text, (int)l.Tag);
+                frm1.StartPosition = FormStartPosition.Manual;
+                frm1.Location = new Point(this.Location.X, this.Location.Y);
+
+                string str = System.IO.Directory.GetCurrentDirectory();
+                string path = str + "\\data.txt";
+                StreamReader sr = new StreamReader(path);
+                string[] id = Regex.Matches(File.ReadAllText(path), @"(?<=文件序号：).*?(?=#)").Cast<Match>().Select(S => S.Value.Trim()).ToArray();
+                string[] data = Regex.Matches(File.ReadAllText(path), @"(?<=文件内容：).*?(?=#)").Cast<Match>().Select(S => S.Value.Trim()).ToArray();
+                /*string[] id = Regex.Matches(File.ReadAllText(path),
+                    @"\$([^\&])*\%").Cast<Match>().Select(S => S.Value.Trim()).ToArray();
+                string[] data = Regex.Matches(File.ReadAllText(path),
+    @"\%([^\&])*\&").Cast<Match>().Select(S => S.Value.Trim()).ToArray();*/
+
+                int j = 0;
+                foreach(string i in id)
+                {
+                    string tag = Convert.ToString(l.Tag);
+                    if(tag==i)
+                    {
+                        frm1.MOVE_ADD(data[j]);
+                    }
+                    j++;
+                }
+                sr.Close();
+
+
+                //frm1.MdiParent = this;
+                frm1.Show();
+                sonForm.Add(frm1);
+            }
+
+            this.Visible = false;
         }
 
         private bool pinned = true;
@@ -371,30 +434,7 @@ namespace HCIFinal
             //this.Controls.Add(tex);
         }
 
-        private void document_Click(object sender, EventArgs e)             //for_GJY_改过的
-        {
-            Label l = (Label)sender;
-            bool find = false;
-            foreach(Form1 f in sonForm)
-            {
-                if(f.f_id == (int)l.Tag)
-                {
-                    f.Visible = true;
-                    find = true;
-                }
-            }
-            if (!find)
-            {
-                Form1 frm1 = new Form1(this, l.Text, (int)l.Tag);
-                frm1.StartPosition = FormStartPosition.Manual;
-                frm1.Location = new Point(this.Location.X, this.Location.Y);
-                //frm1.MdiParent = this;
-                frm1.Show();
-                sonForm.Add(frm1);
-            }
-            
-            this.Visible = false;
-        } 
+       
         private void move_Click(object sender, EventArgs e)              //for_GJY_改过的
         {
             if (is_moving)
