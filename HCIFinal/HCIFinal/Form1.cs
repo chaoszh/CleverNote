@@ -641,14 +641,6 @@ namespace HCIFinal
             SendMessage((IntPtr)this.Handle, VM_NCLBUTTONDOWN, HTCAPTION, 0);
         }
 
-        /*
-        private void Form1_MouseMove(object sender, MouseEventArgs e)
-        {
-            mouseAt = new Point(e.X, e.Y);
-            Console.Write(e.X +','+ e.Y);
-        }
-        */
-
         #region 热键
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, KeyModifiers fsModifiers, Keys vk);
