@@ -45,7 +45,7 @@
             this.ExitButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.ExitButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.ExitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ExitButton.Location = new System.Drawing.Point(406, 11);
+            this.ExitButton.Location = new System.Drawing.Point(404, 11);
             this.ExitButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ExitButton.Name = "ExitButton";
             this.ExitButton.Size = new System.Drawing.Size(18, 18);
@@ -95,7 +95,7 @@
             this.AddButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.AddButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.AddButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AddButton.Location = new System.Drawing.Point(37, 13);
+            this.AddButton.Location = new System.Drawing.Point(16, 13);
             this.AddButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.AddButton.Name = "AddButton";
             this.AddButton.Size = new System.Drawing.Size(15, 15);
@@ -107,11 +107,10 @@
             // folderName
             // 
             this.folderName.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.folderName.AutoSize = true;
             this.folderName.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.folderName.Location = new System.Drawing.Point(187, 13);
+            this.folderName.Location = new System.Drawing.Point(176, 13);
             this.folderName.Name = "folderName";
-            this.folderName.Size = new System.Drawing.Size(31, 13);
+            this.folderName.Size = new System.Drawing.Size(80, 20);
             this.folderName.TabIndex = 2;
             this.folderName.Text = "主页";
             this.folderName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -126,7 +125,7 @@
             // 
             // Form2
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
             this.ClientSize = new System.Drawing.Size(433, 529);
@@ -136,9 +135,9 @@
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Form2";
+            this.Opacity = 0.8D;
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
