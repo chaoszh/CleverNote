@@ -77,7 +77,7 @@ namespace HCIFinal
                 l.Size = new System.Drawing.Size(180, 85);
                 l.TabIndex = 6;
                 l.BackColor = Color.FromArgb(35, 35, 35);
-                l.Text = "新文件夹";
+                l.Text = line;
                 l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                 l.DoubleClick += new System.EventHandler(this.document_Click);
                 l.Click += new System.EventHandler(this.move_Click);
