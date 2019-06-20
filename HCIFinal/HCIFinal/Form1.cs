@@ -501,7 +501,7 @@ namespace HCIFinal
             l.BackColor = Color.FromArgb(35, 35, 35);
             l.Size = new System.Drawing.Size(400, 85);
             l.TabIndex = 6;
-            l.Text = "新消息";
+            l.Text = text;
             l.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             l.Padding = new Padding(10, 10, 80, 10);
             l.AutoSize = false;
@@ -735,7 +735,7 @@ namespace HCIFinal
             //F2
             RegisterHotKey(Handle, 990316, 0, Keys.F2);
             //F3
-            RegisterHotKey(Handle, 990803, 0, Keys.Q);
+            RegisterHotKey(Handle, 990803, 0, Keys.F3);
         }
 
         //热键统一注销
