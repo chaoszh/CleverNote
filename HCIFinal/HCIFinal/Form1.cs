@@ -71,9 +71,11 @@ namespace HCIFinal
         public Form1()
         {
             InitializeComponent();
+            this.folderName.Font = new System.Drawing.Font("等线", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
         }
         public Form1(Form2 form, string title, int id) : this()            //由form2生成form1时调用， for_GJY_改过的
         {
+            this.folderName.Font = new System.Drawing.Font("等线", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             _form1 = form;
             _title = title;
             f_id = id;
@@ -116,7 +118,7 @@ namespace HCIFinal
             l.Text = "新消息";
             l.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             l.Click += new System.EventHandler(this.l_Edit_Click);
-            l.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            l.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             l.Tag = _id;
             l.Padding = new Padding(10, 10, 80, 10);
             l.AutoSize = false;
@@ -365,7 +367,10 @@ namespace HCIFinal
             _form1.Close();
             this.Close();
         }
-
+        public void setFolderName(string name)
+        {
+            this.folderName.Text = name;
+        }
         private bool pinned = true;
         private void PinButton_Click(object sender, EventArgs e)              //置顶
         {
@@ -404,7 +409,7 @@ namespace HCIFinal
             l.Text = "新消息";
             l.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             l.Click += new System.EventHandler(this.l_Edit_Click);
-            l.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            l.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             l.Tag = _id;
             l.Padding = new Padding(10, 10, 80, 10);
             l.AutoSize = false;
@@ -457,7 +462,7 @@ namespace HCIFinal
             t.Name = "textBox";
             t.Size = new System.Drawing.Size(400, 85);
             t.Text = l.Text;
-            t.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            t.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             t.TabIndex = 1;
             t.DoubleClick += new System.EventHandler(this.t_Edit_Click);
             t.TextChanged += new System.EventHandler(this.TextChanged);
@@ -503,7 +508,7 @@ namespace HCIFinal
 
 
             l.Click += new System.EventHandler(this.l_Edit_Click);
-            l.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            l.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             l.Tag = _id;
 
             //甘某人加的移动
@@ -552,7 +557,7 @@ namespace HCIFinal
             t.Name = "textBox";
             t.Size = new System.Drawing.Size(400, 85);
             t.Text = l.Text;
-            t.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            t.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             t.TabIndex = 1;
             t.DoubleClick += new System.EventHandler(this.t_Edit_Click);
             t.TextChanged += new System.EventHandler(this.TextChanged);

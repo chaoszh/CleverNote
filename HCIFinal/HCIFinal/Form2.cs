@@ -81,7 +81,7 @@ namespace HCIFinal
                 l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                 l.DoubleClick += new System.EventHandler(this.document_Click);
                 l.Click += new System.EventHandler(this.move_Click);
-                l.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                l.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
                 l.Tag = _id;
                 //用于移动
                 l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
@@ -105,7 +105,7 @@ namespace HCIFinal
                 t.Name = "textBox";
                 t.Size = new System.Drawing.Size(180, 85);
                 t.Text = l.Text;
-                t.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                t.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
                 t.TabIndex = 1;
                 t.TextChanged += new System.EventHandler(this.TextChanged);
                 t.DoubleClick += new System.EventHandler(this.t_Edit_Click);
@@ -133,6 +133,7 @@ namespace HCIFinal
             InitializeComponent();
             string str = System.IO.Directory.GetCurrentDirectory();
             Read(str+"\\data.txt");
+            this.folderName.Font = new System.Drawing.Font("等线", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.ExitButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ExitButton.BackgroundImage")));
             this.PinButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("PinButton.BackgroundImage")));
@@ -398,7 +399,7 @@ namespace HCIFinal
             l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             l.DoubleClick += new System.EventHandler(this.document_Click);
             l.Click += new System.EventHandler(this.move_Click);
-            l.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            l.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             l.Tag = _id;
             //用于移动
             l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
@@ -422,7 +423,7 @@ namespace HCIFinal
             t.Name = "textBox";
             t.Size = new System.Drawing.Size(180, 85);
             t.Text = l.Text;
-            t.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            t.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             t.TabIndex = 1;
             t.TextChanged += new System.EventHandler(this.TextChanged);
             t.DoubleClick += new System.EventHandler(this.t_Edit_Click);
@@ -499,6 +500,15 @@ namespace HCIFinal
                 if (id == i.id)
                 {
                     i._l.Text = i._t.Text;
+                    break;
+                }
+
+            }
+            foreach (Form1 f in sonForm)
+            {
+                if (id == f.f_id)
+                {
+                    f.setFolderName(t.Text);
                     break;
                 }
 
