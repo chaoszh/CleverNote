@@ -321,6 +321,9 @@ namespace HCIFinal
                     m.WParam = new IntPtr(2);//鼠标放在标题栏内
                     base.WndProc(ref m);
                     break;
+                case 0x0312://热键
+                    HotKeyReact(m.WParam.ToInt32());
+                    break;
                 default:
                     base.WndProc(ref m);
                     break;
@@ -624,5 +627,85 @@ namespace HCIFinal
             //发送消息 让系统误以为在标题栏上按下鼠标
             SendMessage((IntPtr)this.Handle, VM_NCLBUTTONDOWN, HTCAPTION, 0);
         }
+
+        #region 热键
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, KeyModifiers fsModifiers, Keys vk);
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        [Flags()]
+        public enum KeyModifiers
+        {
+            None = 0,
+            Alt = 1,
+            Ctrl = 2,
+            Shift = 4,
+            WindowsKey = 8
+        }
+
+        //热键统一注册
+        private void ShortcutKeyActivate()
+        {
+            //F2
+            RegisterHotKey(Handle, 990316, 0, Keys.F2);
+            //F3
+            RegisterHotKey(Handle, 990803, 0, Keys.Q);
+        }
+
+        //热键统一注销
+        private void ShortcutKeyUnactivate()
+        {
+            //注销
+            UnregisterHotKey(Handle, 990316);
+        }
+
+        //窗口Activate时注册热键
+        private void Form1_Activated(object sender, EventArgs e)
+        {
+            ShortcutKeyActivate();
+        }
+
+        //窗口Leave时注销热键
+        private void Form1_Leave(object sender, EventArgs e)
+        {
+            ShortcutKeyUnactivate();
+        }
+
+        //快捷键响应，在WndProc()中调用的函数
+        private void HotKeyReact(int m)
+        {
+            switch (m)
+            {
+                //热键F2
+                case 990316:
+                    MOVE_ADD(getClipMsg());
+                    break;
+                //热键F3
+                case 990803:
+                    if (this.WindowState == FormWindowState.Minimized) this.WindowState = FormWindowState.Normal;
+                    else this.WindowState = FormWindowState.Minimized;
+                    break;
+            }
+        }
+
+        //从剪贴板拿取消息
+        private string getClipMsg()
+        {
+            // Declares an IDataObject to hold the data returned from the clipboard.
+            // Retrieves the data from the clipboard.
+            IDataObject iData = Clipboard.GetDataObject();
+
+            // Determines whether the data is in a format you can use.
+            if (iData.GetDataPresent(DataFormats.Text))
+            {
+                // Yes it is, so display it in a text box.
+                return (String)iData.GetData(DataFormats.Text);
+            }
+            else
+            {
+                return "无法从剪贴板获取数据";
+            }
+        }
+        #endregion
     }
 }
