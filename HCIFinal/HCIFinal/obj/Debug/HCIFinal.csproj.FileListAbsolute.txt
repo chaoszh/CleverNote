@@ -41,15 +41,3 @@ C:\Users\hasee\Downloads\CleverNote-master(1)\CleverNote-master\HCIFinal\HCIFina
 C:\Users\hasee\Downloads\CleverNote-master(1)\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csproj.CoreCompileInputs.cache
 C:\Users\hasee\Downloads\CleverNote-master(1)\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.exe
 C:\Users\hasee\Downloads\CleverNote-master(1)\CleverNote-master\HCIFinal\HCIFinal\obj\Debug\HCIFinal.pdb
-C:\Users\甘霖凉\Desktop\CleverNote\HCIFinal\HCIFinal\bin\Debug\HCIFinal.exe.config
-C:\Users\甘霖凉\Desktop\CleverNote\HCIFinal\HCIFinal\bin\Debug\HCIFinal.exe
-C:\Users\甘霖凉\Desktop\CleverNote\HCIFinal\HCIFinal\bin\Debug\HCIFinal.pdb
-C:\Users\甘霖凉\Desktop\CleverNote\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csprojAssemblyReference.cache
-C:\Users\甘霖凉\Desktop\CleverNote\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Form1.resources
-C:\Users\甘霖凉\Desktop\CleverNote\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Form2.resources
-C:\Users\甘霖凉\Desktop\CleverNote\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Properties.Resources.resources
-C:\Users\甘霖凉\Desktop\CleverNote\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csproj.GenerateResource.cache
-C:\Users\甘霖凉\Desktop\CleverNote\HCIFinal\HCIFinal\obj\Debug\HCIFinal.csproj.CoreCompileInputs.cache
-C:\Users\甘霖凉\Desktop\CleverNote\HCIFinal\HCIFinal\obj\Debug\HCIFinal.exe
-C:\Users\甘霖凉\Desktop\CleverNote\HCIFinal\HCIFinal\obj\Debug\HCIFinal.pdb
-E:\ChaosZh\文件\项目\【大二下】用户交互技术\Final Project\Project\HCIFinal\HCIFinal\obj\Debug\HCIFinal.Form2.resources

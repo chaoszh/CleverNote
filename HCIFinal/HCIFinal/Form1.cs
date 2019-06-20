@@ -8,8 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
-
 
 namespace HCIFinal
 {
@@ -21,16 +19,6 @@ namespace HCIFinal
         private int _id;
         public int f_id;         //for_GJY_改过的
         private string _title;   //标题
-
-        [DllImport("user32.dll")]//这块用来移动这个窗体
-        public static extern bool ReleaseCapture();
-
-        [DllImport("user32.dll")]
-        public static extern bool SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
-
-        private const int VM_NCLBUTTONDOWN = 0XA1;//定义鼠标左键按下
-        private const int HTCAPTION = 2;
-
         public struct item       //todolist每一条的item
         {
             public int id;
@@ -54,7 +42,7 @@ namespace HCIFinal
                 //_del.Location = new Point(p.X + 355, p.Y +30);
                 //_del.BringToFront();
 
-
+               
             }
         };
         public struct items      //item数组
@@ -71,9 +59,12 @@ namespace HCIFinal
         public Form1()
         {
             InitializeComponent();
+            this.folderName.Font = new Font(Font.FontFamily, 12, Font.Style);
+            this.folderName.Text = this._title;
         }
         public Form1(Form2 form, string title, int id) : this()            //由form2生成form1时调用， for_GJY_改过的
         {
+            this.folderName.Font = new Font(Font.FontFamily, 12, Font.Style);
             _form1 = form;
             _title = title;
             f_id = id;
@@ -102,39 +93,69 @@ namespace HCIFinal
             }
             movingItem = createMovingItem();
         }
+        public void setFolderName(string name)
+        {
+            this.folderName.Text = name;
+        }
         private item createMovingItem()
         {
+            this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;    //滚动条
             Label l = new Label();                                               //文本label
-            l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            //l.BackColor = Color.LightGray;
+            //l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             l.Location = new System.Drawing.Point(8, 18 + (text_cont) * 100);
             l.Name = "新消息";
+            l.BackColor = Color.FromArgb(35, 35, 35);
             l.Size = new System.Drawing.Size(400, 85);
             l.TabIndex = 6;
             l.Text = "新消息";
-            l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            l.DoubleClick += new System.EventHandler(this.l_Edit_Click);
+            l.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            l.Click += new System.EventHandler(this.l_Edit_Click);
             l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
-            l.Tag = -1;
+            l.Tag = _id;
+            l.Padding = new Padding(10, 10, 80, 10);
+            l.AutoSize = false;
+
+            //甘某人加的移动
+            l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
+            l.MouseUp += new System.Windows.Forms.MouseEventHandler(TextBox_MouseUp);
+            l.MouseMove += new System.Windows.Forms.MouseEventHandler(TextBox_MouseMove);
 
             Button del = new Button();                                                //删除button
             del.Location = new System.Drawing.Point(360, 50);
             del.Name = "D";
-            del.Size = new System.Drawing.Size(25, 25);
+            del.Size = new System.Drawing.Size(22, 22);
             del.TabIndex = 0;
-            del.Text = "D";
+            //del.Text = "D";
             del.UseVisualStyleBackColor = true;
             del.Click += new System.EventHandler(this.DEL_Click);
-            del.Tag = -1;
+            del.Tag = _id;
+            del.BackColor = Color.FromArgb(35, 35, 35);
+            del.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            del.FlatAppearance.BorderSize = 0;
+            Image img1 = Image.FromFile(@"..\..\\Resources\del.png");
+            del.BackgroundImage = img1;
+            del.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 
             Button move = new Button();                                                //移动button
             move.Location = new System.Drawing.Point(360, 10);
             move.Name = "M";
-            move.Size = new System.Drawing.Size(25, 25);
-            move.TabIndex = 1;
-            move.Text = "M";
+            move.Size = new System.Drawing.Size(22, 22);
+            move.TabIndex = 0;
+            //move.Text = "M";
+
+            // img1.Size = move.Size;
             move.UseVisualStyleBackColor = true;
+            move.BackColor = Color.FromArgb(35, 35, 35);
             move.Click += new System.EventHandler(this.move_Click);
-            move.Tag = -1;
+            move.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            move.FlatAppearance.BorderSize = 0;
+            move.Tag = _id;
+            Image img2 = Image.FromFile(@"..\..\\Resources\move.png");
+            move.BackgroundImage = img2;
+            move.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+
+
 
 
 
@@ -150,11 +171,11 @@ namespace HCIFinal
             i.id = -1;
             return i;
         }
-
-
+        
+        
         private void TextBox_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if(e.Button == MouseButtons.Left)
             {
                 mouse_offset = new Point(-e.X, -e.Y);
                 Label movingLabel = (Label)sender;
@@ -183,15 +204,15 @@ namespace HCIFinal
 
                 is_down = true;
             }
-
+            
         }
 
-        private item return_this_itsm(object sender, Point p)
+        private item return_this_itsm(object sender,Point p)
         {
-
+         
             foreach (item i in _items._item)
             {
-                if (p.Y == i._l.Location.Y)
+                if(p.Y== i._l.Location.Y)
                 {
                     return i;
                 }
@@ -203,7 +224,7 @@ namespace HCIFinal
             Point mousePos = Control.MousePosition;
             if (is_down)
             {
-                movingItem.setlocation(((Control)sender).Parent.PointToClient(mousePos).X + delta.X, ((Control)sender).Parent.PointToClient(mousePos).Y);
+                movingItem.setlocation(((Control)sender).Parent.PointToClient(mousePos).X+delta.X, ((Control)sender).Parent.PointToClient(mousePos).Y);
 
 
                 foreach (item i in _items._item)
@@ -226,7 +247,7 @@ namespace HCIFinal
             }
 
         }
-
+        
         private void TextBox_MouseUp(object sender, MouseEventArgs e)//鼠标抬起换位置
         {
             is_down = false;
@@ -236,7 +257,7 @@ namespace HCIFinal
                 mousePos.Offset(mouse_offset.X, mouse_offset.Y);
                 bool down = false;
 
-
+           
                 foreach (item i in _items._item)
                 {
                     item t = (item)i;
@@ -261,9 +282,9 @@ namespace HCIFinal
                             }
                         }
                     }
-
+                    
                 }
-
+                
                 if (!down)
                 {
                     item this_sander = return_this_itsm(sender, ((Control)sender).Location);
@@ -321,9 +342,6 @@ namespace HCIFinal
                     m.WParam = new IntPtr(2);//鼠标放在标题栏内
                     base.WndProc(ref m);
                     break;
-                case 0x0312://热键
-                    HotKeyReact(m.WParam.ToInt32());
-                    break;
                 default:
                     base.WndProc(ref m);
                     break;
@@ -335,21 +353,28 @@ namespace HCIFinal
         #region navigator bar
         private void ExitButton_Click(object sender, EventArgs e)    //退出
         {
-            _form1.SaveFile();
             _form1.Close();
             this.Close();
         }
 
         private bool pinned = true;
-        private void PinButton_Click(object sender, EventArgs e)     //置顶
+        private void PinButton_Click(object sender, EventArgs e)              //置顶
         {
             if (pinned == true)
             {
+                System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
                 this.TopMost = false;
+                Image img4 = Image.FromFile("../../Resources/move.png");
+                this.PinButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("PinButton.BackgroundImage")));
+                this.PinButton.Size = new System.Drawing.Size(16, 16);
+                //this.PinButton.BackgroundImage = img4;
             }
             else
             {
                 this.TopMost = true;
+                this.PinButton.Size = new System.Drawing.Size(20, 20);
+                Image img3 = Image.FromFile("../../Resources/Pinned.png");
+                this.PinButton.BackgroundImage = img3;
             }
             pinned = !pinned;
         }
@@ -360,16 +385,22 @@ namespace HCIFinal
         {
             this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;    //滚动条
             Label l = new Label();                                               //文本label
-            l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            //l.BackColor = Color.LightGray;
+            //l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             l.Location = new System.Drawing.Point(8, 18 + (text_cont) * 100);
             l.Name = "新消息";
+            l.BackColor = Color.FromArgb(35,35,35);
             l.Size = new System.Drawing.Size(400, 85);
             l.TabIndex = 6;
             l.Text = "新消息";
-            l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            l.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             l.Click += new System.EventHandler(this.l_Edit_Click);
             l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
             l.Tag = _id;
+            l.Padding = new Padding(10, 10, 80, 10);
+            l.AutoSize = false;
+
+
 
             //甘某人加的移动
             l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
@@ -379,22 +410,38 @@ namespace HCIFinal
             Button del = new Button();                                                //删除button
             del.Location = new System.Drawing.Point(360, 50);
             del.Name = "D";
-            del.Size = new System.Drawing.Size(25, 25);
+            del.Size = new System.Drawing.Size(22, 22);
             del.TabIndex = 0;
-            del.Text = "D";
+            //del.Text = "D";
             del.UseVisualStyleBackColor = true;
             del.Click += new System.EventHandler(this.DEL_Click);
             del.Tag = _id;
+            del.BackColor = Color.FromArgb(35, 35, 35);
+            del.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            del.FlatAppearance.BorderSize = 0;
+            Image img1 = Image.FromFile(@"..\..\\Resources\del.png");
+            del.BackgroundImage = img1;
+            del.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 
             Button move = new Button();                                                //移动button
             move.Location = new System.Drawing.Point(360, 10);
             move.Name = "M";
-            move.Size = new System.Drawing.Size(25, 25);
-            move.TabIndex = 1;
-            move.Text = "M";
+            move.Size = new System.Drawing.Size(22, 22);
+            move.TabIndex = 0;
+            //move.Text = "M";
+            
+           // img1.Size = move.Size;
             move.UseVisualStyleBackColor = true;
+            move.BackColor = Color.FromArgb(35, 35, 35);
             move.Click += new System.EventHandler(this.move_Click);
+            move.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            move.FlatAppearance.BorderSize = 0;
             move.Tag = _id;
+            Image img2 = Image.FromFile(@"..\..\\Resources\move.png");
+            move.BackgroundImage = img2;
+            move.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+
+
 
             TextBox t = new TextBox();                                                //修改时的输入文本框
             t.Location = new System.Drawing.Point(8, 18 + (text_cont++) * 100);
@@ -407,7 +454,7 @@ namespace HCIFinal
             t.TextChanged += new System.EventHandler(this.TextChanged);
             t.Multiline = true;
             t.Tag = _id;
-
+            t.BorderStyle = System.Windows.Forms.BorderStyle.None;
 
 
             this.panel2.Controls.Add(l);   //添加操作
@@ -415,7 +462,7 @@ namespace HCIFinal
             l.Controls.Add(move);
 
             this.panel2.Controls.Add(t);
-            l.Visible = false;
+            t.Visible = false;
             item i = new item();
             i._l = l;
             i._del = del;
@@ -431,43 +478,67 @@ namespace HCIFinal
         {
             this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;
 
-            Label l = new Label();
-            l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;    //滚动条
+            Label l = new Label();                                               //文本label
+            //l.BackColor = Color.LightGray;
+            //l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             l.Location = new System.Drawing.Point(8, 18 + (text_cont) * 100);
             l.Name = "新消息";
+            l.BackColor = Color.FromArgb(35, 35, 35);
             l.Size = new System.Drawing.Size(400, 85);
             l.TabIndex = 6;
-            l.Text = text;
-            l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            l.DoubleClick += new System.EventHandler(this.l_Edit_Click);
+            l.Text = "新消息";
+            l.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            l.Padding = new Padding(10, 10, 80, 10);
+            l.AutoSize = false;
+
+
+            l.Click += new System.EventHandler(this.l_Edit_Click);
             l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
             l.Tag = _id;
+
             //甘某人加的移动
             l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
             l.MouseUp += new System.Windows.Forms.MouseEventHandler(TextBox_MouseUp);
             l.MouseMove += new System.Windows.Forms.MouseEventHandler(TextBox_MouseMove);
 
-            Button del = new Button();
+            Button del = new Button();                                                //删除button
             del.Location = new System.Drawing.Point(360, 50);
             del.Name = "D";
-            del.Size = new System.Drawing.Size(25, 25);
+            del.Size = new System.Drawing.Size(22, 22);
             del.TabIndex = 0;
-            del.Text = "D";
+            //del.Text = "D";
             del.UseVisualStyleBackColor = true;
             del.Click += new System.EventHandler(this.DEL_Click);
             del.Tag = _id;
+            del.BackColor = Color.FromArgb(35, 35, 35);
+            del.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            del.FlatAppearance.BorderSize = 0;
+            Image img1 = Image.FromFile(@"..\..\\Resources\del.png");
+            del.BackgroundImage = img1;
+            del.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 
-            Button move = new Button();
+            Button move = new Button();                                                //移动button
             move.Location = new System.Drawing.Point(360, 10);
             move.Name = "M";
-            move.Size = new System.Drawing.Size(25, 25);
-            move.TabIndex = 1;
-            move.Text = "M";
-            move.UseVisualStyleBackColor = true;
-            move.Click += new System.EventHandler(this.move_Click);
-            move.Tag = _id;
+            move.Size = new System.Drawing.Size(22, 22);
+            move.TabIndex = 0;
+            //move.Text = "M";
 
-            TextBox t = new TextBox();
+            // img1.Size = move.Size;
+            move.UseVisualStyleBackColor = true;
+            move.BackColor = Color.FromArgb(35, 35, 35);
+            move.Click += new System.EventHandler(this.move_Click);
+            move.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            move.FlatAppearance.BorderSize = 0;
+            move.Tag = _id;
+            Image img2 = Image.FromFile(@"..\..\\Resources\move.png");
+            move.BackgroundImage = img2;
+            move.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+
+
+
+            TextBox t = new TextBox();                                                //修改时的输入文本框
             t.Location = new System.Drawing.Point(8, 18 + (text_cont++) * 100);
             t.Name = "textBox";
             t.Size = new System.Drawing.Size(400, 85);
@@ -478,6 +549,7 @@ namespace HCIFinal
             t.TextChanged += new System.EventHandler(this.TextChanged);
             t.Multiline = true;
             t.Tag = _id;
+            t.BorderStyle = System.Windows.Forms.BorderStyle.None;
 
 
             l.Controls.Add(del);
@@ -553,22 +625,23 @@ namespace HCIFinal
                 }
 
             }
+
         }
         private void move_Click(object sender, EventArgs e)            //移动
         {
             Button btn = (Button)sender;
             int id = (int)btn.Tag;
-
+            
             foreach (item i in _items._item)
             {
                 if (id == i.id)
                 {
-                    this._form1.moveChoose(this, _items.id, i.id, i._l.Text);
+                    this._form1.moveChoose(this,_items.id, i.id, i._l.Text);
                     break;
                 }
             }
             this._form1.Visible = true;
-
+            
             this.Visible = false;
         }
         private void l_Edit_Click(object sender, EventArgs e)
@@ -619,93 +692,6 @@ namespace HCIFinal
 
             }
         }
-
-        private void Panel1_MouseDown(object sender, MouseEventArgs e)//解决窗体不能移动
-        {
-            //为当前应用程序释放鼠标捕获
-            ReleaseCapture();
-            //发送消息 让系统误以为在标题栏上按下鼠标
-            SendMessage((IntPtr)this.Handle, VM_NCLBUTTONDOWN, HTCAPTION, 0);
-        }
-
-        #region 热键
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool RegisterHotKey(IntPtr hWnd, int id, KeyModifiers fsModifiers, Keys vk);
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-        [Flags()]
-        public enum KeyModifiers
-        {
-            None = 0,
-            Alt = 1,
-            Ctrl = 2,
-            Shift = 4,
-            WindowsKey = 8
-        }
-
-        //热键统一注册
-        private void ShortcutKeyActivate()
-        {
-            //F2
-            RegisterHotKey(Handle, 990316, 0, Keys.F2);
-            //F3
-            RegisterHotKey(Handle, 990803, 0, Keys.Q);
-        }
-
-        //热键统一注销
-        private void ShortcutKeyUnactivate()
-        {
-            //注销
-            UnregisterHotKey(Handle, 990316);
-        }
-
-        //窗口Activate时注册热键
-        private void Form1_Activated(object sender, EventArgs e)
-        {
-            ShortcutKeyActivate();
-        }
-
-        //窗口Leave时注销热键
-        private void Form1_Leave(object sender, EventArgs e)
-        {
-            ShortcutKeyUnactivate();
-        }
-
-        //快捷键响应，在WndProc()中调用的函数
-        private void HotKeyReact(int m)
-        {
-            switch (m)
-            {
-                //热键F2
-                case 990316:
-                    MOVE_ADD(getClipMsg());
-                    break;
-                //热键F3
-                case 990803:
-                    if (this.WindowState == FormWindowState.Minimized) this.WindowState = FormWindowState.Normal;
-                    else this.WindowState = FormWindowState.Minimized;
-                    break;
-            }
-        }
-
-        //从剪贴板拿取消息
-        private string getClipMsg()
-        {
-            // Declares an IDataObject to hold the data returned from the clipboard.
-            // Retrieves the data from the clipboard.
-            IDataObject iData = Clipboard.GetDataObject();
-
-            // Determines whether the data is in a format you can use.
-            if (iData.GetDataPresent(DataFormats.Text))
-            {
-                // Yes it is, so display it in a text box.
-                return (String)iData.GetData(DataFormats.Text);
-            }
-            else
-            {
-                return "无法从剪贴板获取数据";
-            }
-        }
-        #endregion
     }
+    
 }
