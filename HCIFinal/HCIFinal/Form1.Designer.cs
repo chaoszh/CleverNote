@@ -133,7 +133,7 @@
             this.folderName.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.folderName.Location = new System.Drawing.Point(187, 13);
             this.folderName.Name = "folderName";
-            this.folderName.Size = new System.Drawing.Size(0, 15);
+            this.folderName.Size = new System.Drawing.Size(0, 13);
             this.folderName.TabIndex = 2;
             this.folderName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -147,7 +147,7 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
             this.ClientSize = new System.Drawing.Size(433, 529);

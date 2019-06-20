@@ -66,23 +66,22 @@ namespace HCIFinal
             string[] result = Regex.Matches(File.ReadAllText(path), @"(?<=@).*?(?=#)").Cast<Match>().Select(S => S.Value.Trim()).ToArray();
             foreach(string line in result)
             {
-                // Console.WriteLine(line.ToString());
                 this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;   //滚动条
                                                                                     //System.Threading.Thread.Sleep(500);
 
 
                 Label l = new Label();                                               //文本框label
-                l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
                 l.Location = new System.Drawing.Point(8 + (text_cont % 2) * 200, 18 + (text_cont / 2) * 100);
 
                 l.Name = "新文件夹";
                 l.Size = new System.Drawing.Size(180, 85);
                 l.TabIndex = 6;
-                l.Text = line;
+                l.BackColor = Color.FromArgb(35, 35, 35);
+                l.Text = "新文件夹";
                 l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
                 l.DoubleClick += new System.EventHandler(this.document_Click);
                 l.Click += new System.EventHandler(this.move_Click);
-                l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
+                l.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
                 l.Tag = _id;
                 //用于移动
                 l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
@@ -106,7 +105,7 @@ namespace HCIFinal
                 t.Name = "textBox";
                 t.Size = new System.Drawing.Size(180, 85);
                 t.Text = l.Text;
-                t.Font = new Font(t.Font.FontFamily, 15, t.Font.Style);
+                t.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
                 t.TabIndex = 1;
                 t.TextChanged += new System.EventHandler(this.TextChanged);
                 t.DoubleClick += new System.EventHandler(this.t_Edit_Click);
@@ -117,7 +116,7 @@ namespace HCIFinal
                 this.panel2.Controls.Add(l);                            //添加操作，不用改
                                                                         //l.Controls.Add(edit);
                 this.panel2.Controls.Add(t);
-                l.Visible = false;
+                t.Visible = false;
                 ditem i = new ditem();
                 i._l = l;
                 //i._del = edit;
@@ -134,6 +133,10 @@ namespace HCIFinal
             InitializeComponent();
             string str = System.IO.Directory.GetCurrentDirectory();
             Read(str+"\\data.txt");
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            this.ExitButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ExitButton.BackgroundImage")));
+            this.PinButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("PinButton.BackgroundImage")));
+            this.AddButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("AddButton.BackgroundImage")));
         }
 
         public void changeShowState()   //show or hide
@@ -360,11 +363,19 @@ namespace HCIFinal
         {
             if (pinned == true)
             {
+                System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
                 this.TopMost = false;
+                Image img4 = Image.FromFile("../../Resources/move.png");
+                this.PinButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("PinButton.BackgroundImage")));
+                this.PinButton.Size = new System.Drawing.Size(16, 16);
+                //this.PinButton.BackgroundImage = img4;
             }
             else
             {
                 this.TopMost = true;
+                this.PinButton.Size = new System.Drawing.Size(20, 20);
+                Image img3 = Image.FromFile("../../Resources/Pinned.png");
+                this.PinButton.BackgroundImage = img3;
             }
             pinned = !pinned;
         }
@@ -377,23 +388,23 @@ namespace HCIFinal
 
 
             Label l = new Label();                                               //文本框label
-            l.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            l.Location = new System.Drawing.Point(8+(text_cont%2)*200, 18 + (text_cont/2) * 100);
-            
+            l.Location = new System.Drawing.Point(8 + (text_cont % 2) * 200, 18 + (text_cont / 2) * 100);
+
             l.Name = "新文件夹";
             l.Size = new System.Drawing.Size(180, 85);
             l.TabIndex = 6;
-            l.Text = "新文件夹(我觉得可以有一个文件夹的图片）";
+            l.BackColor = Color.FromArgb(35, 35, 35);
+            l.Text = "新文件夹";
             l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             l.DoubleClick += new System.EventHandler(this.document_Click);
             l.Click += new System.EventHandler(this.move_Click);
-            l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
+            l.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             l.Tag = _id;
             //用于移动
             l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
             l.MouseUp += new System.Windows.Forms.MouseEventHandler(TextBox_MouseUp);
             l.Click += new System.EventHandler(this.Edit_Click_l);
-            
+
 
             /*Button edit = new Button();                                         //编辑按钮
             edit.Location = new System.Drawing.Point(150, 6);
@@ -411,7 +422,7 @@ namespace HCIFinal
             t.Name = "textBox";
             t.Size = new System.Drawing.Size(180, 85);
             t.Text = l.Text;
-            t.Font = new Font(t.Font.FontFamily, 15, t.Font.Style);
+            t.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             t.TabIndex = 1;
             t.TextChanged += new System.EventHandler(this.TextChanged);
             t.DoubleClick += new System.EventHandler(this.t_Edit_Click);
@@ -422,19 +433,16 @@ namespace HCIFinal
             this.panel2.Controls.Add(l);                            //添加操作，不用改
             //l.Controls.Add(edit);
             this.panel2.Controls.Add(t);
-            l.Visible = false;
+            t.Visible = false;
             ditem i = new ditem();
             i._l = l;
             //i._del = edit;
             i._t = t;
             i.id = _id++;
             _items.Add(i);
-            //System.Threading.Thread.Sleep(500);
-            //this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Maximum;
-            //this.Controls.Add(tex);
         }
 
-       
+
         private void move_Click(object sender, EventArgs e)              //for_GJY_改过的
         {
             if (is_moving)
@@ -568,6 +576,7 @@ namespace HCIFinal
              //发送消息 让系统误以为在标题栏上按下鼠标
             SendMessage((IntPtr)this.Handle, VM_NCLBUTTONDOWN, HTCAPTION, 0);
         }
+
     }
 
 }
