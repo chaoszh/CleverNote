@@ -155,9 +155,10 @@
             this.Font = new System.Drawing.Font("等线", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Opacity = 0.8D;
-            this.Text = "Form1";
+            this.Text = "CleverNote";
             this.Activated += new System.EventHandler(this.Form1_Activated);
             this.Leave += new System.EventHandler(this.Form1_Leave);
             this.panel1.ResumeLayout(false);
