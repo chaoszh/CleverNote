@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace HCIFinal
 {
@@ -18,6 +21,18 @@ namespace HCIFinal
         private int _id = 0;                    //item id
         public bool is_moving = false;          //是否正处于移动状态（item在文件夹间移动）
         public bool is_show = true;             //窗口隐藏与否
+       
+
+
+        [DllImport("user32.dll")]
+         public static extern bool ReleaseCapture();
+
+         [DllImport("user32.dll")]
+         public static extern bool SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
+
+         private const int VM_NCLBUTTONDOWN = 0XA1;//定义鼠标左键按下
+         private const int HTCAPTION = 2;
+
         public struct ditem                     //文件夹item
         {
             public int id;
@@ -42,18 +57,91 @@ namespace HCIFinal
         int movingID;
         string movingSTR;
         int movingFID;
-        private ArrayList _items = new ArrayList();
+        public ArrayList _items = new ArrayList();
         public ArrayList itemList = new ArrayList();
         public ArrayList sonForm = new ArrayList();     //子窗口数组
-        //GlobalMouseHandler 
-        public Form2()
-        {
-            InitializeComponent();
-            this.folderName.Font = new Font(Font.FontFamily, 12, Font.Style);
+                                                        //GlobalMouseHandler 
+        public void Read(string path)//初始化读文件还原上次关闭
+        {   StreamReader sr = new StreamReader(path);
+            string[] result = Regex.Matches(File.ReadAllText(path), @"(?<=@).*?(?=#)").Cast<Match>().Select(S => S.Value.Trim()).ToArray();
+            foreach(string line in result)
+            {
+                this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Minimum;   //滚动条
+                                                                                    //System.Threading.Thread.Sleep(500);
+
+
+                Label l = new Label();                                               //文本框label
+                l.Location = new System.Drawing.Point(8 + (text_cont % 2) * 200, 18 + (text_cont / 2) * 100);
+
+                l.Name = "新文件夹";
+                l.Size = new System.Drawing.Size(180, 85);
+                l.TabIndex = 6;
+                l.BackColor = Color.FromArgb(35, 35, 35);
+                l.Text = line;
+                l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+                l.DoubleClick += new System.EventHandler(this.document_Click);
+                l.Click += new System.EventHandler(this.move_Click);
+                l.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                l.Tag = _id;
+                //用于移动
+                l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
+                l.MouseUp += new System.Windows.Forms.MouseEventHandler(TextBox_MouseUp);
+                l.Click += new System.EventHandler(this.Edit_Click_l);
+
+
+                /*Button edit = new Button();                                         //编辑按钮
+                edit.Location = new System.Drawing.Point(150, 6);
+                edit.Name = "E";
+                edit.Size = new System.Drawing.Size(25, 25);
+                edit.TabIndex = 1;
+                edit.Text = "E";
+                edit.UseVisualStyleBackColor = true;
+                edit.Click += new System.EventHandler(this.Edit_Click);
+                edit.Tag = _id;*/
+
+
+                TextBox t = new TextBox();                                          //重命名时的修改框
+                t.Location = new System.Drawing.Point(8 + (text_cont % 2) * 200, 18 + (text_cont / 2) * 100);
+                t.Name = "textBox";
+                t.Size = new System.Drawing.Size(180, 85);
+                t.Text = l.Text;
+                t.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                t.TabIndex = 1;
+                t.TextChanged += new System.EventHandler(this.TextChanged);
+                t.DoubleClick += new System.EventHandler(this.t_Edit_Click);
+                t.Multiline = true;
+                t.Tag = _id;
+                text_cont++;
+
+                this.panel2.Controls.Add(l);                            //添加操作，不用改
+                                                                        //l.Controls.Add(edit);
+                this.panel2.Controls.Add(t);
+                t.Visible = false;
+                ditem i = new ditem();
+                i._l = l;
+                //i._del = edit;
+                i._t = t;
+                i.id = _id++;
+                _items.Add(i);
+            }
+            
+            sr.Close();
         }
 
-        public void changeShowState(object sender, KeyEventArgs e)   //show or hide
-        { 
+        public Form2()//初始化
+        {
+            InitializeComponent();
+            string str = System.IO.Directory.GetCurrentDirectory();
+            Read(str+"\\data.txt");
+            this.folderName.Font = new System.Drawing.Font("等线", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            this.ExitButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ExitButton.BackgroundImage")));
+            this.PinButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("PinButton.BackgroundImage")));
+            this.AddButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("AddButton.BackgroundImage")));
+        }
+
+        public void changeShowState()   //show or hide
+        {
             if (is_show)
             {
                 this.Visible = false;
@@ -189,9 +277,86 @@ namespace HCIFinal
         #endregion
 
         #region navigator bar
+        public void SaveFile()
+        {
+            string str = System.IO.Directory.GetCurrentDirectory();
+            FileStream fs = new FileStream(str + "\\data.txt", FileMode.Open);
+            fs.Seek(0, SeekOrigin.Begin);
+            fs.SetLength(0);
+            fs.Close();
+            //Directory.Delete((str + "\\data.txt"),true);
+            //FileStream fs1 = new FileStream((str + "\\data.txt"), FileMode.Create, FileAccess.Write);
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter((str + "\\data.txt"), true))
+            {
+                for (int i = 0; i < _items.Count; i++)
+                {
+                    object i_ditem = _items[i];
+                    ditem j_ditem = (ditem)i_ditem;
+                    file.WriteLine("@" + j_ditem._l.Text + "#");// 直接追加文件末尾，换行 
+                }
+                foreach (Form1 s in sonForm)
+                {
+                    foreach (Form1.item i in s._items._item)
+                    {
+                        string id = Convert.ToString(s.f_id);
+                        file.WriteLine("文件序号：" + id + "#文件内容：" + i._l.Text + "#");
+                    }
+                }
+                file.Close();
+            }
+        }
         private void ExitButton_Click(object sender, EventArgs e)             //退出
         {
+            SaveFile(); 
             this.Close();
+        }
+        private void document_Click(object sender, EventArgs e)             //for_GJY_改过的
+        {
+            Label l = (Label)sender;
+            bool find = false;
+            foreach (Form1 f in sonForm)
+            {
+                if (f.f_id == (int)l.Tag)
+                {
+                    f.Visible = true;
+                    find = true;
+                }
+            }
+            if (!find)
+            {
+                Form1 frm1 = new Form1(this, l.Text, (int)l.Tag);
+                frm1.StartPosition = FormStartPosition.Manual;
+                frm1.Location = new Point(this.Location.X, this.Location.Y);
+
+                string str = System.IO.Directory.GetCurrentDirectory();
+                string path = str + "\\data.txt";
+                StreamReader sr = new StreamReader(path);
+                string[] id = Regex.Matches(File.ReadAllText(path), @"(?<=文件序号：).*?(?=#)").Cast<Match>().Select(S => S.Value.Trim()).ToArray();
+                string[] data = Regex.Matches(File.ReadAllText(path), @"(?<=文件内容：).*?(?=#)").Cast<Match>().Select(S => S.Value.Trim()).ToArray();
+                /*string[] id = Regex.Matches(File.ReadAllText(path),
+                    @"\$([^\&])*\%").Cast<Match>().Select(S => S.Value.Trim()).ToArray();
+                string[] data = Regex.Matches(File.ReadAllText(path),
+    @"\%([^\&])*\&").Cast<Match>().Select(S => S.Value.Trim()).ToArray();*/
+
+                int j = 0;
+                foreach(string i in id)
+                {
+                    string tag = Convert.ToString(l.Tag);
+                    if(tag==i)
+                    {
+                        frm1.MOVE_ADD(data[j]);
+                    }
+                    j++;
+                }
+                sr.Close();
+
+
+                //frm1.MdiParent = this;
+                frm1.Show();
+                sonForm.Add(frm1);
+            }
+
+            this.Visible = false;
         }
 
         private bool pinned = true;
@@ -224,8 +389,8 @@ namespace HCIFinal
 
 
             Label l = new Label();                                               //文本框label
-            l.Location = new System.Drawing.Point(8+(text_cont%2)*200, 18 + (text_cont/2) * 100);
-            
+            l.Location = new System.Drawing.Point(8 + (text_cont % 2) * 200, 18 + (text_cont / 2) * 100);
+
             l.Name = "新文件夹";
             l.Size = new System.Drawing.Size(180, 85);
             l.TabIndex = 6;
@@ -234,13 +399,13 @@ namespace HCIFinal
             l.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             l.DoubleClick += new System.EventHandler(this.document_Click);
             l.Click += new System.EventHandler(this.move_Click);
-            l.Font = new Font(l.Font.FontFamily, 15, l.Font.Style);
+            l.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             l.Tag = _id;
             //用于移动
             l.MouseDown += new System.Windows.Forms.MouseEventHandler(TextBox_MouseDown);
             l.MouseUp += new System.Windows.Forms.MouseEventHandler(TextBox_MouseUp);
             l.Click += new System.EventHandler(this.Edit_Click_l);
-            
+
 
             /*Button edit = new Button();                                         //编辑按钮
             edit.Location = new System.Drawing.Point(150, 6);
@@ -258,7 +423,7 @@ namespace HCIFinal
             t.Name = "textBox";
             t.Size = new System.Drawing.Size(180, 85);
             t.Text = l.Text;
-            t.Font = new Font(t.Font.FontFamily, 15, t.Font.Style);
+            t.Font = new System.Drawing.Font("等线", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             t.TabIndex = 1;
             t.TextChanged += new System.EventHandler(this.TextChanged);
             t.DoubleClick += new System.EventHandler(this.t_Edit_Click);
@@ -276,35 +441,9 @@ namespace HCIFinal
             i._t = t;
             i.id = _id++;
             _items.Add(i);
-            //System.Threading.Thread.Sleep(500);
-            //this.panel2.VerticalScroll.Value = panel2.VerticalScroll.Maximum;
-            //this.Controls.Add(tex);
         }
 
-        private void document_Click(object sender, EventArgs e)             //for_GJY_改过的
-        {
-            Label l = (Label)sender;
-            bool find = false;
-            foreach(Form1 f in sonForm)
-            {
-                if(f.f_id == (int)l.Tag)
-                {
-                    f.Visible = true;
-                    find = true;
-                }
-            }
-            if (!find)
-            {
-                Form1 frm1 = new Form1(this, l.Text, (int)l.Tag);
-                frm1.StartPosition = FormStartPosition.Manual;
-                frm1.Location = new Point(this.Location.X, this.Location.Y);
-                //frm1.MdiParent = this;
-                frm1.Show();
-                sonForm.Add(frm1);
-            }
-            
-            this.Visible = false;
-        } 
+
         private void move_Click(object sender, EventArgs e)              //for_GJY_改过的
         {
             if (is_moving)
@@ -430,10 +569,24 @@ namespace HCIFinal
             }
         }
 
-        private void Panel2_Paint(object sender, PaintEventArgs e)
+    private void Panel2_Paint(object sender, PaintEventArgs e)
         {
 
         }
+
+        private void Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void Panel1_MouseDown_1(object sender, MouseEventArgs e)//解决窗体不能移动
+        {
+            //为当前应用程序释放鼠标捕获
+              ReleaseCapture();
+             //发送消息 让系统误以为在标题栏上按下鼠标
+            SendMessage((IntPtr)this.Handle, VM_NCLBUTTONDOWN, HTCAPTION, 0);
+        }
+
     }
 
 }
